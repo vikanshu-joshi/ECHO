@@ -1,5 +1,6 @@
 package com.vikanshu.echo.Activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -12,6 +13,7 @@ import com.vikanshu.echo.Fragments.SettingsFragment
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.bottom_bar.*
 
 class MainActivity : AppCompatActivity(){
 
