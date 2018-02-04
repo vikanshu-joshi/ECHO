@@ -1,11 +1,13 @@
 package com.vikanshu.echo.Activities
 
-import android.content.Intent
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Fragments.AboutFragment
 import com.vikanshu.echo.Fragments.AllSongsFragment
 import com.vikanshu.echo.Fragments.FavouritesFragment
@@ -13,9 +15,12 @@ import com.vikanshu.echo.Fragments.SettingsFragment
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.bottom_bar.*
 
 class MainActivity : AppCompatActivity(){
+
+    object statified{
+        lateinit var mediaPlayer: MediaPlayer
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +30,15 @@ class MainActivity : AppCompatActivity(){
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+        mediaPlayer = MediaPlayer()
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        val allsongs = AllSongsFragment()
+        val bundle = Bundle()
+        bundle.putString("where","Main")
+        allsongs.arguments = bundle
         this.supportFragmentManager
                 .beginTransaction()
-                .add(R.id.frag_holder_main,AllSongsFragment())
+                .add(R.id.frag_holder_main,allsongs)
                 .commit()
         all_songs.setBackgroundColor(resources.getColor(R.color.gray))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
@@ -40,9 +51,13 @@ class MainActivity : AppCompatActivity(){
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))
         about.setBackgroundColor(resources.getColor(R.color.white))
+        val all = AllSongsFragment()
+        val bund = Bundle()
+        bund.putString("where","Nav")
+        all.arguments = bund
         this.supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.frag_holder_main,AllSongsFragment())
+                .replace(R.id.frag_holder_main,all)
                 .commit()
         drawer_layout.closeDrawers()
     }
@@ -86,5 +101,10 @@ class MainActivity : AppCompatActivity(){
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        mediaPlayer.release()
+        super.onDestroy()
     }
 }
