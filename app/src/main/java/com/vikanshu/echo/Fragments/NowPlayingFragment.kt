@@ -4,75 +4,44 @@ package com.vikanshu.echo.Fragments
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.vikanshu.echo.Activities.MainActivity
-import com.vikanshu.echo.Adapters.SongsListAdapter
-import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
-import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.R
-import kotlinx.android.synthetic.main.bottom_bar.*
-import kotlinx.android.synthetic.main.fragment_all_songs.*
+import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
+import com.vikanshu.echo.Data.SharedPrefs
+import kotlinx.android.synthetic.main.fragment_now_playing.*
 
-class AllSongsFragment : Fragment() {
+
+class NowPlayingFragment : Fragment() {
 
     lateinit var songs: ArrayList<SongsData>
-    lateinit var invisibleLayout: ConstraintLayout
-    lateinit var visibleLayout: ConstraintLayout
     lateinit var preferences: SharedPrefs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
+                                     savedInstanceState: Bundle?): View? {
+        val itemView = inflater.inflate(R.layout.fragment_now_playing, container, false)
         songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
-        invisibleLayout = view.findViewById(R.id.invisible)
-        visibleLayout = view.findViewById(R.id.visible)
-        return view
+        return itemView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val arg = arguments?.getString("where")
-        if (songs.isEmpty()) {
-            invisibleLayout.visibility = View.VISIBLE
-            visibleLayout.visibility = View.INVISIBLE
-            visibleLayout.isClickable = false
-        }
-        else{
-            if (arg.equals("Main")){
-                mediaPlayer.setDataSource(songs[preferences.getSongInfo()].path)
-                mediaPlayer.prepare()
-            }
+        if (songs.isNotEmpty()){
             updateViews()
-            playPauseBottomBar.setOnClickListener {
+            playPauseNow.setOnClickListener {
                 playPause()
-                updateViews()
             }
-            playNextBottomBar.setOnClickListener {
+            playNextNow.setOnClickListener {
                 playNext()
-                updateViews()
+            }
+            playPrevNow.setOnClickListener {
+                playPrev()
             }
         }
-        val adapter = SongsListAdapter(context,songs)
-        songsList.adapter = adapter
-        songsList.setOnItemClickListener { parent, view, position, id ->
-            preferences.setSongInfo(position)
-            playSong()
-            updateViews()
-        }
-    }
-    fun updateViews(){
-        songNameBottomBar.text = songs[preferences.getSongInfo()].title
-        artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
-        if (mediaPlayer.isPlaying){
-            playPauseBottomBar.setImageResource(R.drawable.pause_icon)
-        }
-        return
     }
     fun playSong(){
         mediaPlayer.pause()
@@ -81,16 +50,25 @@ class AllSongsFragment : Fragment() {
         mediaPlayer.setDataSource(songs[pos].path)
         mediaPlayer.prepare()
         mediaPlayer.start()
-        playPauseBottomBar.setImageResource(R.drawable.pause_icon)
+        updateViews()
+        playPauseNow.setImageResource(R.drawable.pause_icon)
+        return
+    }
+    fun updateViews(){
+        titleNow.text = songs[preferences.getSongInfo()].title
+        artistNow.text = songs[preferences.getSongInfo()].artist
+        if (mediaPlayer.isPlaying){
+            playPauseNow.setImageResource(R.drawable.pause_icon)
+        }
         return
     }
     fun playPause(){
         if (mediaPlayer.isPlaying){
             mediaPlayer.pause()
-            playPauseBottomBar.setImageResource(R.drawable.play_icon)
+            playPauseNow.setImageResource(R.drawable.play_icon)
         }else{
             mediaPlayer.start()
-            playPauseBottomBar.setImageResource(R.drawable.pause_icon)
+            playPauseNow.setImageResource(R.drawable.pause_icon)
         }
         return
     }
@@ -100,6 +78,17 @@ class AllSongsFragment : Fragment() {
             playSong()
         }else{
             val pos = (preferences.getSongInfo()+1)
+            preferences.setSongInfo(pos)
+            playSong()
+        }
+        return
+    }
+    fun playPrev(){
+        if (preferences.getSongInfo() == 0){
+            preferences.setSongInfo((songs.size - 1))
+            playSong()
+        }else{
+            val pos = (preferences.getSongInfo()-1)
             preferences.setSongInfo(pos)
             playSong()
         }
@@ -130,4 +119,5 @@ class AllSongsFragment : Fragment() {
         songCursor?.close()
         return arrayList
     }
+
 }

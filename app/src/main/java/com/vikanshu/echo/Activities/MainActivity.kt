@@ -8,10 +8,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
-import com.vikanshu.echo.Fragments.AboutFragment
-import com.vikanshu.echo.Fragments.AllSongsFragment
-import com.vikanshu.echo.Fragments.FavouritesFragment
-import com.vikanshu.echo.Fragments.SettingsFragment
+import com.vikanshu.echo.Fragments.*
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -45,8 +42,20 @@ class MainActivity : AppCompatActivity(){
         settings.setBackgroundColor(resources.getColor(R.color.white))
         about.setBackgroundColor(resources.getColor(R.color.white))
     }
-
+    fun nowPlaying(v: View){
+        nowPlaying.setBackgroundColor(resources.getColor(R.color.gray))
+        all_songs.setBackgroundColor(resources.getColor(R.color.white))
+        favourites.setBackgroundColor(resources.getColor(R.color.white))
+        settings.setBackgroundColor(resources.getColor(R.color.white))
+        about.setBackgroundColor(resources.getColor(R.color.white))
+        this.supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frag_holder_main,NowPlayingFragment())
+                .commit()
+        drawer_layout.closeDrawers()
+    }
     fun all_songs(v: View){
+        nowPlaying.setBackgroundColor(resources.getColor(R.color.white))
         all_songs.setBackgroundColor(resources.getColor(R.color.gray))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))
@@ -62,6 +71,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun favourites(v: View){
+        nowPlaying.setBackgroundColor(resources.getColor(R.color.white))
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.gray))
         settings.setBackgroundColor(resources.getColor(R.color.white))
@@ -73,6 +83,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun settings(v: View){
+        nowPlaying.setBackgroundColor(resources.getColor(R.color.white))
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.gray))
@@ -84,6 +95,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun about(v: View){
+        nowPlaying.setBackgroundColor(resources.getColor(R.color.white))
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))

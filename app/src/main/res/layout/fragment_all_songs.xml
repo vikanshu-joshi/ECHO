@@ -15,13 +15,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/include"
+            app:layout_constraintBottom_toTopOf="@+id/includeBottomBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            android:id="@+id/include"
+            android:id="@+id/includeBottomBar"
             layout="@layout/bottom_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

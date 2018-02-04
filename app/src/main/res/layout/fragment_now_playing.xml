@@ -1,0 +1,127 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="@color/visualizer">
+
+
+        <ImageView
+            android:id="@+id/playPauseNow"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="30dp"
+            android:contentDescription="@string/playpause"
+            android:src="@drawable/play_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/playNextNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:contentDescription="@string/playnext"
+            android:src="@drawable/play_next_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
+            app:layout_constraintStart_toEndOf="@+id/playPauseNow"
+            app:layout_constraintTop_toTopOf="@+id/playPauseNow" />
+
+        <ImageView
+            android:id="@+id/playPrevNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:contentDescription="@string/playprev"
+            android:src="@drawable/play_previous_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
+            app:layout_constraintEnd_toStartOf="@+id/playPauseNow"
+            app:layout_constraintTop_toTopOf="@+id/playPauseNow" />
+
+        <TextView
+            android:id="@+id/artistNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ellipsize="end"
+            android:fontFamily="casual"
+            android:maxLines="1"
+            android:maxWidth="270dp"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/playPauseNow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="i am the artist name" />
+
+        <TextView
+            android:id="@+id/titleNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:fontFamily="casual"
+            android:maxLines="1"
+            android:maxWidth="270dp"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/artistNow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="i am the song name" />
+
+        <SeekBar
+            android:id="@+id/musicSeek"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/titleNow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/musicSeek"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="00:00" />
+
+        <TextView
+            android:id="@+id/endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/musicSeek"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="00:00" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
