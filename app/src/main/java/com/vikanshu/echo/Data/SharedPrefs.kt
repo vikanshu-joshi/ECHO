@@ -21,4 +21,11 @@ class SharedPrefs(context: Context){
         editor.apply()
     }
 
+    fun settings(){
+
+    }
+
+    fun readSetting(){
+
+    }
 }

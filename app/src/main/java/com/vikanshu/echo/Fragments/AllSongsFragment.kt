@@ -29,48 +29,43 @@ class AllSongsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
-
         songs = getSongsFromPhone()
-
         preferences = SharedPrefs(context as Context)
-
         invisibleLayout = view.findViewById(R.id.invisible)
         visibleLayout = view.findViewById(R.id.visible)
-
-        if (songs.isEmpty()) {
-            invisibleLayout.visibility = View.VISIBLE
-            visibleLayout.visibility = View.INVISIBLE
-        }
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val adapter = SongsListAdapter(context,songs)
         val arg = arguments?.getString("where")
-        if (arg.equals("Main")){
-            mediaPlayer.setDataSource(songs[preferences.getSongInfo()].path)
-            mediaPlayer.prepare()
+        if (songs.isEmpty()) {
+            invisibleLayout.visibility = View.VISIBLE
+            visibleLayout.visibility = View.INVISIBLE
+            visibleLayout.isClickable = false
+        }else{
+            if (arg.equals("Main")){
+                mediaPlayer.setDataSource(songs[preferences.getSongInfo()].path)
+                mediaPlayer.prepare()
+            }
+            updateViews()
+            playPauseBottomBar.setOnClickListener {
+                playPause()
+                updateViews()
+            }
+            playNextBottomBar.setOnClickListener {
+                playNext()
+                updateViews()
+            }
         }
-        updateViews()
-
+        val adapter = SongsListAdapter(context,songs)
         songsList.adapter = adapter
-
         songsList.setOnItemClickListener { parent, view, position, id ->
             preferences.setSongInfo(position)
             playSong()
             updateViews()
         }
-        playPauseBottomBar.setOnClickListener {
-            playPause()
-            updateViews()
-        }
-        playNextBottomBar.setOnClickListener {
-            playNext()
-            updateViews()
-        }
     }
-
     fun updateViews(){
         songNameBottomBar.text = songs[preferences.getSongInfo()].title
         artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
@@ -79,7 +74,6 @@ class AllSongsFragment : Fragment() {
         }
         return
     }
-
     fun playSong(){
         mediaPlayer.pause()
         mediaPlayer.reset()
@@ -90,7 +84,6 @@ class AllSongsFragment : Fragment() {
         playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         return
     }
-
     fun playPause(){
         if (mediaPlayer.isPlaying){
             mediaPlayer.pause()
@@ -101,7 +94,6 @@ class AllSongsFragment : Fragment() {
         }
         return
     }
-
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){
             preferences.setSongInfo(0)
@@ -113,7 +105,6 @@ class AllSongsFragment : Fragment() {
         }
         return
     }
-
     fun getSongsFromPhone(): ArrayList<SongsData>{
         val arrayList = arrayListOf<SongsData>()
         val contentResolver = context?.contentResolver
