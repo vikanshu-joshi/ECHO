@@ -1,127 +1,173 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"/>
+        android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:background="@color/visualizer">
+        <com.cleveroad.audiovisualization.GLAudioVisualizationView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/visualizer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:av_bubblesSize="25dp"
+            app:av_bubblesRandomizeSizes="true"
+            app:av_wavesHeight="60dp"
+            app:av_wavesFooterHeight="150dp"
+            app:av_wavesCount="50"
+            app:av_layersCount="4"
+            app:av_wavesColors="@array/rainbow"
+            app:av_backgroundColor="@color/colorPrimaryDark"
+            app:av_bubblesPerLayer="20"
+            />
 
+    </LinearLayout>
 
-        <ImageView
-            android:id="@+id/playPauseNow"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginBottom="30dp"
-            android:contentDescription="@string/playpause"
-            android:src="@drawable/play_icon"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_alignParentBottom="true"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/playNextNow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:contentDescription="@string/playnext"
-            android:src="@drawable/play_next_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
-            app:layout_constraintStart_toEndOf="@+id/playPauseNow"
-            app:layout_constraintTop_toTopOf="@+id/playPauseNow" />
 
-        <ImageView
-            android:id="@+id/playPrevNow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:contentDescription="@string/playprev"
-            android:src="@drawable/play_previous_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
-            app:layout_constraintEnd_toStartOf="@+id/playPauseNow"
-            app:layout_constraintTop_toTopOf="@+id/playPauseNow" />
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/titleNow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/artistNow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:ellipsize="end"
-            android:fontFamily="casual"
-            android:maxLines="1"
-            android:maxWidth="270dp"
-            android:singleLine="true"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/playPauseNow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="i am the artist name" />
+            <ImageView
+                android:id="@+id/playPauseNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/play_icon" />
 
-        <TextView
-            android:id="@+id/titleNow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:ellipsize="end"
-            android:fontFamily="casual"
-            android:maxLines="1"
-            android:maxWidth="270dp"
-            android:singleLine="true"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/artistNow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="i am the song name" />
+            <ImageView
+                android:id="@+id/playNextNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
+                app:layout_constraintStart_toEndOf="@+id/playPauseNow"
+                app:layout_constraintTop_toTopOf="@+id/playPauseNow"
+                app:srcCompat="@drawable/play_next_icon" />
 
-        <SeekBar
-            android:id="@+id/musicSeek"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/titleNow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            <ImageView
+                android:id="@+id/playPrevNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
+                app:layout_constraintEnd_toStartOf="@+id/playPauseNow"
+                app:layout_constraintTop_toTopOf="@+id/playPauseNow"
+                app:srcCompat="@drawable/play_previous_icon" />
 
-        <TextView
-            android:id="@+id/startTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/musicSeek"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="00:00" />
+            <ImageView
+                android:id="@+id/shuffle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/playNextNow"
+                app:layout_constraintStart_toEndOf="@+id/playNextNow"
+                app:layout_constraintTop_toTopOf="@+id/playNextNow"
+                app:srcCompat="@drawable/shuffle_white_icon" />
 
-        <TextView
-            android:id="@+id/endTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/musicSeek"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="00:00" />
+            <ImageView
+                android:id="@+id/loop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/playPrevNow"
+                app:layout_constraintEnd_toStartOf="@+id/playPrevNow"
+                app:layout_constraintTop_toTopOf="@+id/playPrevNow"
+                app:srcCompat="@drawable/loop_white_icon" />
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/artistNow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:fontFamily="casual"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/playPauseNow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="i am artist" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/titleNow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:fontFamily="casual"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/artistNow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="i am song" />
+
+            <TextView
+                android:id="@+id/startTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="00:00" />
+
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="00:00" />
+
+        </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

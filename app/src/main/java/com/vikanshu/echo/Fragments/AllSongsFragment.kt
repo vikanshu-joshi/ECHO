@@ -2,6 +2,7 @@ package com.vikanshu.echo.Fragments
 
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
@@ -9,7 +10,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Adapters.SongsListAdapter
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
@@ -65,7 +65,13 @@ class AllSongsFragment : Fragment() {
             playSong()
             updateViews()
         }
+        mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+            override fun onCompletion(mp: MediaPlayer?) {
+                playNext()
+            }
+        })
     }
+
     fun updateViews(){
         songNameBottomBar.text = songs[preferences.getSongInfo()].title
         artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
