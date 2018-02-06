@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +21,10 @@ import com.vikanshu.echo.Data.SharedPrefs
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 import java.util.concurrent.TimeUnit
 import com.cleveroad.audiovisualization.DbmHandler
-
-
-
-
+import android.support.v7.app.AppCompatActivity
+import com.vikanshu.echo.Activities.MainActivity
+import kotlinx.android.synthetic.main.fragment_all_songs.*
+import kotlinx.android.synthetic.main.fragment_favourites.*
 
 
 class NowPlayingFragment : Fragment() {
@@ -32,13 +33,18 @@ class NowPlayingFragment : Fragment() {
     lateinit var preferences: SharedPrefs
     lateinit var visualizer: GLAudioVisualizationView
     lateinit var audioVisualizationView: AudioVisualization
+    lateinit var seekBarNow: SeekBar
+    var here = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                      savedInstanceState: Bundle?): View? {
+        (activity as AppCompatActivity).supportActionBar!!.hide()
         val itemView = inflater.inflate(R.layout.fragment_now_playing, container, false)
         visualizer = itemView.findViewById(R.id.visualizer_view)
+        seekBarNow = itemView.findViewById(R.id.seekBar)
         songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
+        here = arguments!!.getString("here","All Songs")
         return itemView
     }
 
@@ -61,56 +67,75 @@ class NowPlayingFragment : Fragment() {
                     playNext()
                 }
             })
-            seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    val min = TimeUnit.MILLISECONDS.toSeconds(seekBar?.progress?.toLong() as Long)
-                    val sec = TimeUnit.MILLISECONDS.toSeconds(seekBar.progress.toLong())
-                    startTime.text = String.format("%d:%d",(min/60),(sec%60))
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mediaPlayer.seekTo(seekBar?.progress as Int)
-                    seekProgress()
-                }
-            })
+//            seekBarNow.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+//                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                    val min = TimeUnit.MILLISECONDS.toSeconds(seekBar?.progress?.toLong() as Long)
+//                    val sec = TimeUnit.MILLISECONDS.toSeconds(seekBar.progress.toLong())
+//                    startTime.text = String.format("%d:%d",(min/60),(sec%60))
+//                }
+//
+//                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+//                }
+//
+//                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+//                    mediaPlayer.seekTo(seekBar?.progress as Int)
+////                    seekProgress(1)
+//                }
+//            })
             val vizualizerHandler = DbmHandler.Factory.newVisualizerHandler(context as Context, 0)
             audioVisualizationView.linkTo(vizualizerHandler)
+            nowPlaying.setOnClickListener {
+                if (here == "All Songs"){
+                    (context as MainActivity).supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.frag_holder_main,AllSongsFragment())
+                            .commit()
+                }else if (here == "Fav"){
+                    (context as MainActivity).supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.frag_holder_main,FavouritesFragment())
+                            .commit()
+                }
+            }
+            dropDownBtn.setOnClickListener {
+                if (here == "All Songs"){
+                    (context as MainActivity).supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.frag_holder_main,AllSongsFragment())
+                            .commit()
+                }else if (here == "Fav"){
+                    (context as MainActivity).supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.frag_holder_main,FavouritesFragment())
+                            .commit()
+                }
+            }
         }
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         audioVisualizationView = visualizer
     }
-
     override fun onDestroyView() {
         audioVisualizationView.release()
         super.onDestroyView()
     }
-
     override fun onPause() {
         audioVisualizationView.onPause()
         super.onPause()
     }
-
     override fun onResume() {
         audioVisualizationView.onResume()
         super.onResume()
     }
-
-    fun seekProgress(){
-        var min = TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong())
-        var sec = TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong())
-        startTime.text = String.format("%d:%d",(min/60),(sec%60))
-        seekBar.progress = mediaPlayer.currentPosition
-        if (mediaPlayer.isPlaying){
+    fun seekProgress(i: Int){
+        seekBarNow.progress = mediaPlayer.currentPosition
+        if (mediaPlayer.isPlaying && i==1){
             Handler().postDelayed({
-                seekProgress()
+                seekProgress(1)
             },500)
         }
+        return
     }
     fun playSong(){
         mediaPlayer.pause()
@@ -120,30 +145,31 @@ class NowPlayingFragment : Fragment() {
         mediaPlayer.prepare()
         mediaPlayer.start()
         updateViews()
-        playPauseNow.setImageResource(R.drawable.pause_icon)
+        playPauseNow.setImageResource(R.drawable.pause)
         return
     }
     fun updateViews(){
-        var min = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
-        var sec = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
+        val min = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
+        val sec = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
         endTime.text = String.format("%d:%d",(min/60),(sec%60))
+        startTime.text = "0:0"
         titleNow.text = songs[preferences.getSongInfo()].title
         artistNow.text = songs[preferences.getSongInfo()].artist
         if (mediaPlayer.isPlaying){
-            playPauseNow.setImageResource(R.drawable.pause_icon)
+            playPauseNow.setImageResource(R.drawable.pause)
         }
-        seekProgress()
+        /*seekProgress(1)*/
         return
     }
     fun playPause(){
         if (mediaPlayer.isPlaying){
             mediaPlayer.pause()
-            playPauseNow.setImageResource(R.drawable.play_icon)
+            playPauseNow.setImageResource(R.drawable.play)
         }else{
             mediaPlayer.start()
-            playPauseNow.setImageResource(R.drawable.pause_icon)
+            playPauseNow.setImageResource(R.drawable.pause)
         }
-        seekProgress()
+//        seekProgress(1)
         return
     }
     fun playNext(){

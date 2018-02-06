@@ -5,28 +5,65 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.cleveroad.audiovisualization.GLAudioVisualizationView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.cleveroad.audiovisualization.GLAudioVisualizationView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/visualizer_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:av_bubblesSize="25dp"
-            app:av_bubblesRandomizeSizes="true"
-            app:av_wavesHeight="60dp"
-            app:av_wavesFooterHeight="150dp"
-            app:av_wavesCount="50"
-            app:av_layersCount="4"
-            app:av_wavesColors="@array/rainbow"
             app:av_backgroundColor="@color/colorPrimaryDark"
             app:av_bubblesPerLayer="20"
-            />
+            app:av_bubblesRandomizeSizes="true"
+            app:av_bubblesSize="25dp"
+            app:av_layersCount="4"
+            app:av_wavesColors="@array/rainbow"
+            app:av_wavesCount="50"
+            app:av_wavesFooterHeight="150dp"
+            app:av_wavesHeight="60dp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/nowPlaying"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="casual"
+            android:text="Now Playing"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/favBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dropDownBtn"
+            app:layout_constraintTop_toTopOf="@+id/visualizer_view" />
+
+        <ImageView
+            android:id="@+id/dropDownBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/nowPlaying"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nowPlaying"
+            app:srcCompat="@drawable/drop" />
+
+        <ImageView
+            android:id="@+id/favBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/nowPlaying"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nowPlaying"
+            app:srcCompat="@drawable/favorite_off" />
+
+    </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -48,38 +85,41 @@
 
             <ImageView
                 android:id="@+id/playPauseNow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginBottom="20dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/play_icon" />
+                app:srcCompat="@drawable/play" />
 
             <ImageView
                 android:id="@+id/playNextNow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
                 app:layout_constraintStart_toEndOf="@+id/playPauseNow"
                 app:layout_constraintTop_toTopOf="@+id/playPauseNow"
-                app:srcCompat="@drawable/play_next_icon" />
+                app:srcCompat="@drawable/next" />
 
             <ImageView
                 android:id="@+id/playPrevNow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
                 app:layout_constraintEnd_toStartOf="@+id/playPauseNow"
                 app:layout_constraintTop_toTopOf="@+id/playPauseNow"
-                app:srcCompat="@drawable/play_previous_icon" />
+                app:srcCompat="@drawable/prev" />
 
             <ImageView
                 android:id="@+id/shuffle"
@@ -88,10 +128,11 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="@+id/playNextNow"
                 app:layout_constraintStart_toEndOf="@+id/playNextNow"
                 app:layout_constraintTop_toTopOf="@+id/playNextNow"
-                app:srcCompat="@drawable/shuffle_white_icon" />
+                app:srcCompat="@drawable/shuffle" />
 
             <ImageView
                 android:id="@+id/loop"
@@ -100,10 +141,11 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="@+id/playPrevNow"
                 app:layout_constraintEnd_toStartOf="@+id/playPrevNow"
                 app:layout_constraintTop_toTopOf="@+id/playPrevNow"
-                app:srcCompat="@drawable/loop_white_icon" />
+                app:srcCompat="@drawable/loop" />
 
             <TextView
                 android:id="@+id/artistNow"
@@ -151,8 +193,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/seekBar"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="00:00" />
@@ -162,8 +204,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/seekBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="00:00" />

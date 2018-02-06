@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Adapters.SongsListAdapter
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
@@ -27,6 +29,7 @@ class AllSongsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        (activity as AppCompatActivity).supportActionBar!!.show()
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
         songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
@@ -70,6 +73,16 @@ class AllSongsFragment : Fragment() {
                 playNext()
             }
         })
+        includeBottomBar.setOnClickListener {
+            val nowPlaying = NowPlayingFragment()
+            val bundle = Bundle()
+            bundle.putString("here","All Songs")
+            nowPlaying.arguments = bundle
+            (context as MainActivity).supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.frag_holder_main,nowPlaying)
+                    .commit()
+        }
     }
 
     fun updateViews(){

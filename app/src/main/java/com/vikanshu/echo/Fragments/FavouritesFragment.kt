@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
+import kotlinx.android.synthetic.main.fragment_all_songs.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
 
 
@@ -23,6 +25,7 @@ class FavouritesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        (activity as AppCompatActivity).supportActionBar!!.show()
         preferences = SharedPrefs(context as Context)
         return inflater.inflate(R.layout.fragment_favourites, container, false)
     }
@@ -44,6 +47,16 @@ class FavouritesFragment : Fragment() {
             playNextBottomBar.setOnClickListener {
                 playNext()
                 updateViews()
+            }
+            bottomInclude.setOnClickListener {
+                val nowPlaying = NowPlayingFragment()
+                val bundle = Bundle()
+                bundle.putString("here","Fav")
+                nowPlaying.arguments = bundle
+                (context as MainActivity).supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frag_holder_main,nowPlaying)
+                        .commit()
             }
         }
     }
