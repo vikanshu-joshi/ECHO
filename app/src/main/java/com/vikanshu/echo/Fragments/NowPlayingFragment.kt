@@ -4,10 +4,8 @@ package com.vikanshu.echo.Fragments
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +22,7 @@ import com.cleveroad.audiovisualization.DbmHandler
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.vikanshu.echo.Activities.MainActivity
-import kotlinx.android.synthetic.main.fragment_all_songs.*
-import kotlinx.android.synthetic.main.fragment_favourites.*
+import com.vikanshu.echo.Data.DataBaseFav
 import java.util.*
 
 
@@ -36,6 +33,7 @@ class NowPlayingFragment : Fragment() {
     lateinit var visualizer: GLAudioVisualizationView
     lateinit var audioVisualizationView: AudioVisualization
     lateinit var seekBarNow: SeekBar
+    lateinit var favContent: DataBaseFav
     var here = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +47,9 @@ class NowPlayingFragment : Fragment() {
         here = arguments!!.getString("here","All Songs")
         return itemView
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        favContent = DataBaseFav(context)
         if (songs.isNotEmpty()){
             seekBar.max = songs[preferences.getSongInfo()].duration.toInt()
             updateViews()
@@ -119,7 +117,35 @@ class NowPlayingFragment : Fragment() {
                     loop.setImageResource(R.drawable.loop_on)
                 }
             }
+            favBtn.setOnClickListener {
+                if (favContent.checkIfExists(songs[preferences.getSongInfo()].id.toInt())) {
+                    favBtn.setImageResource(R.drawable.favorite_off)
+                    favContent.deleteFav(songs[preferences.getSongInfo()].id.toInt())
+                    Toast.makeText(context,"Removed from Favourites",Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    favBtn.setImageResource(R.drawable.favorite_on)
+                    favContent.store(songs[preferences.getSongInfo()].title,songs[preferences.getSongInfo()].artist,
+                            songs[preferences.getSongInfo()].path,songs[preferences.getSongInfo()].duration,
+                            songs[preferences.getSongInfo()].id.toInt())
+                    Toast.makeText(context,"Added to Favourites",Toast.LENGTH_SHORT).show()
+                }
+            }
+            seekBarNow.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    val min = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
+                    val sec = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
+                    startTime.text = String.format("%d:%d",(min/60),(sec%60))
+                }
 
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+                }
+
+            })
         }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -150,6 +176,10 @@ class NowPlayingFragment : Fragment() {
         return
     }
     fun updateViews(){
+        if (favContent.checkIfExists(songs[preferences.getSongInfo()].id.toInt()))
+            favBtn.setImageResource(R.drawable.favorite_on)
+        else
+            favBtn.setImageResource(R.drawable.favorite_off)
         val min = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
         val sec = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
         endTime.text = String.format("%d:%d",(min/60),(sec%60))
@@ -178,11 +208,10 @@ class NowPlayingFragment : Fragment() {
         }
         return
     }
-
     fun next(){
         if (preferences.getShuffleSettings() && !preferences.getLoopSettings()){
             val rand = Random()
-            val pos = rand.nextInt(songs.size - 0) + 1
+            val pos = rand.nextInt(songs.size - 0) + 0
             preferences.setSongInfo(pos)
             playSong()
         }else if(preferences.getLoopSettings()){
@@ -195,7 +224,6 @@ class NowPlayingFragment : Fragment() {
             playNext()
         }
     }
-
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){
             preferences.setSongInfo(0)

@@ -119,11 +119,10 @@ class AllSongsFragment : Fragment() {
         }
         return
     }
-
     fun next(){
         if (preferences.getShuffleSettings() && !preferences.getLoopSettings()){
             val rand = Random()
-            val pos = rand.nextInt(songs.size - 0) + 1
+            val pos = rand.nextInt(songs.size - 0) + 0
             preferences.setSongInfo(pos)
             playSong()
         }else if(preferences.getLoopSettings()){
@@ -136,7 +135,6 @@ class AllSongsFragment : Fragment() {
             playNext()
         }
     }
-
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){
             preferences.setSongInfo(0)

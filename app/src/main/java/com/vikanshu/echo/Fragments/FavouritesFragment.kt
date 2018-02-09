@@ -9,19 +9,24 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Activities.MainActivity
+import com.vikanshu.echo.Adapters.FavouritesAdapter
+import com.vikanshu.echo.Data.DataBaseFav
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
-import kotlinx.android.synthetic.main.fragment_all_songs.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
+import java.util.*
 
 
 class FavouritesFragment : Fragment() {
 
     lateinit var songs: ArrayList<SongsData>
+    var songsFav: ArrayList<SongsData> ?= null
     lateinit var preferences: SharedPrefs
+    lateinit var favContent: DataBaseFav
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -29,23 +34,34 @@ class FavouritesFragment : Fragment() {
         preferences = SharedPrefs(context as Context)
         return inflater.inflate(R.layout.fragment_favourites, container, false)
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        favContent = DataBaseFav(context)
         songs = getSongsFromPhone()
+        songsFav = favContent.queryDBList()
         if (songs.isEmpty()){
             invisibleFav.visibility = View.VISIBLE
             visibleFav.visibility = View.VISIBLE
             visibleFav.isClickable = false
-            no_no_no.setText(resources.getText(R.string.there_are_no_songs_on_your_device_at_the_moment))
         }else{
+            if (songsFav != null) {
+                favList.adapter = FavouritesAdapter(context, songsFav!!)
+//                favList.setOnItemClickListener { parent, view, position, id ->
+//                    preferences.setSongInfo(position)
+//                    playSong()
+//                    updateViews()
+//                }
+            }else{
+                invisibleFav.visibility = View.VISIBLE
+                invisibleFav.setOnClickListener{}
+            }
             updateViews()
             playPauseBottomBar.setOnClickListener {
                 playPause()
                 updateViews()
             }
             playNextBottomBar.setOnClickListener {
-                playNext()
+                next()
                 updateViews()
             }
             bottomInclude.setOnClickListener {
@@ -62,7 +78,10 @@ class FavouritesFragment : Fragment() {
     }
     fun updateViews(){
         songNameBottomBar.text = songs[preferences.getSongInfo()].title
-        artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
+        if (songs[preferences.getSongInfo()].artist == "<unknown>")
+            artistNameBottomBar.text = "unknown artist"
+        else
+            artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
         if (MainActivity.statified.mediaPlayer.isPlaying){
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
@@ -87,6 +106,22 @@ class FavouritesFragment : Fragment() {
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
         return
+    }
+    fun next(){
+        if (preferences.getShuffleSettings() && !preferences.getLoopSettings()){
+            val rand = Random()
+            val pos = rand.nextInt(songs.size - 0) + 0
+            preferences.setSongInfo(pos)
+            playSong()
+        }else if(preferences.getLoopSettings()){
+            if (mediaPlayer.isPlaying)
+                mediaPlayer.seekTo(0)
+            else{
+                playSong()
+            }
+        }else{
+            playNext()
+        }
     }
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){

@@ -17,4 +17,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="playprev">playPrev</string>
     <string name="now_playing">Now Playing</string>
+    <string name="your_favourites_list_is_empty">Your Favourites list is Empty</string>
 </resources>
