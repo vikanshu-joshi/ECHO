@@ -22,9 +22,11 @@ import kotlinx.android.synthetic.main.fragment_now_playing.*
 import java.util.concurrent.TimeUnit
 import com.cleveroad.audiovisualization.DbmHandler
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.vikanshu.echo.Activities.MainActivity
 import kotlinx.android.synthetic.main.fragment_all_songs.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
+import java.util.*
 
 
 class NowPlayingFragment : Fragment() {
@@ -57,31 +59,16 @@ class NowPlayingFragment : Fragment() {
                 playPause()
             }
             playNextNow.setOnClickListener {
-                playNext()
+                next()
             }
             playPrevNow.setOnClickListener {
                 playPrev()
             }
             mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                 override fun onCompletion(mp: MediaPlayer?) {
-                    playNext()
+                    next()
                 }
             })
-//            seekBarNow.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
-//                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                    val min = TimeUnit.MILLISECONDS.toSeconds(seekBar?.progress?.toLong() as Long)
-//                    val sec = TimeUnit.MILLISECONDS.toSeconds(seekBar.progress.toLong())
-//                    startTime.text = String.format("%d:%d",(min/60),(sec%60))
-//                }
-//
-//                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-//                }
-//
-//                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//                    mediaPlayer.seekTo(seekBar?.progress as Int)
-////                    seekProgress(1)
-//                }
-//            })
             val vizualizerHandler = DbmHandler.Factory.newVisualizerHandler(context as Context, 0)
             audioVisualizationView.linkTo(vizualizerHandler)
             nowPlaying.setOnClickListener {
@@ -110,6 +97,29 @@ class NowPlayingFragment : Fragment() {
                             .commit()
                 }
             }
+            shuffle.setOnClickListener {
+                Toast.makeText(context,"Shuffle Off",Toast.LENGTH_SHORT).show()
+                if (preferences.getShuffleSettings()){
+                    preferences.setShuffleSettings(false)
+                    shuffle.setImageResource(R.drawable.shuffle)
+                }else{
+                    Toast.makeText(context,"Shuffle On",Toast.LENGTH_SHORT).show()
+                    preferences.setShuffleSettings(true)
+                    shuffle.setImageResource(R.drawable.shuffle_on)
+                }
+            }
+            loop.setOnClickListener {
+                if (preferences.getLoopSettings()){
+                    Toast.makeText(context,"Loop Off",Toast.LENGTH_SHORT).show()
+                    preferences.setLoopSettings(false)
+                    loop.setImageResource(R.drawable.loop)
+                }else{
+                    Toast.makeText(context,"Loop On",Toast.LENGTH_SHORT).show()
+                    preferences.setLoopSettings(true)
+                    loop.setImageResource(R.drawable.loop_on)
+                }
+            }
+
         }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,15 +138,6 @@ class NowPlayingFragment : Fragment() {
         audioVisualizationView.onResume()
         super.onResume()
     }
-    fun seekProgress(i: Int){
-        seekBarNow.progress = mediaPlayer.currentPosition
-        if (mediaPlayer.isPlaying && i==1){
-            Handler().postDelayed({
-                seekProgress(1)
-            },500)
-        }
-        return
-    }
     fun playSong(){
         mediaPlayer.pause()
         mediaPlayer.reset()
@@ -154,11 +155,17 @@ class NowPlayingFragment : Fragment() {
         endTime.text = String.format("%d:%d",(min/60),(sec%60))
         startTime.text = "0:0"
         titleNow.text = songs[preferences.getSongInfo()].title
-        artistNow.text = songs[preferences.getSongInfo()].artist
+        if (songs[preferences.getSongInfo()].artist == "<unknown>")
+            artistNow.text = "unknown artist"
+        else
+            artistNow.text = songs[preferences.getSongInfo()].artist
         if (mediaPlayer.isPlaying){
             playPauseNow.setImageResource(R.drawable.pause)
         }
-        /*seekProgress(1)*/
+        if (preferences.getShuffleSettings())
+            shuffle.setImageResource(R.drawable.shuffle_on)
+        if (preferences.getLoopSettings())
+            loop.setImageResource(R.drawable.loop_on)
         return
     }
     fun playPause(){
@@ -169,9 +176,26 @@ class NowPlayingFragment : Fragment() {
             mediaPlayer.start()
             playPauseNow.setImageResource(R.drawable.pause)
         }
-//        seekProgress(1)
         return
     }
+
+    fun next(){
+        if (preferences.getShuffleSettings() && !preferences.getLoopSettings()){
+            val rand = Random()
+            val pos = rand.nextInt(songs.size - 0) + 1
+            preferences.setSongInfo(pos)
+            playSong()
+        }else if(preferences.getLoopSettings()){
+            if (mediaPlayer.isPlaying)
+                mediaPlayer.seekTo(0)
+            else{
+                playSong()
+            }
+        }else{
+            playNext()
+        }
+    }
+
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){
             preferences.setSongInfo(0)

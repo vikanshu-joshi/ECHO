@@ -29,7 +29,10 @@ class SongsListAdapter(context: Context?,songsList: ArrayList<SongsData>): BaseA
             holder = itemView.tag as Holder
         }
         holder.songName?.text = songs[position].title
-        holder.artistName?.text = songs[position].artist
+        if (songs[position].artist == "<unknown>")
+            holder.artistName?.text = "unknown artist"
+        else
+            holder.artistName?.text = songs[position].artist
         return itemView
     }
 

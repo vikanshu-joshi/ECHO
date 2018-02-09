@@ -19,6 +19,8 @@ import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
 import kotlinx.android.synthetic.main.fragment_all_songs.*
+import kotlinx.android.synthetic.main.fragment_now_playing.*
+import java.util.*
 
 class AllSongsFragment : Fragment() {
 
@@ -57,7 +59,7 @@ class AllSongsFragment : Fragment() {
                 updateViews()
             }
             playNextBottomBar.setOnClickListener {
-                playNext()
+                next()
                 updateViews()
             }
         }
@@ -70,12 +72,13 @@ class AllSongsFragment : Fragment() {
         }
         mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
             override fun onCompletion(mp: MediaPlayer?) {
-                playNext()
+                next()
             }
         })
         includeBottomBar.setOnClickListener {
             val nowPlaying = NowPlayingFragment()
             val bundle = Bundle()
+            preferences.setFragment(true)
             bundle.putString("here","All Songs")
             nowPlaying.arguments = bundle
             (context as MainActivity).supportFragmentManager
@@ -87,7 +90,10 @@ class AllSongsFragment : Fragment() {
 
     fun updateViews(){
         songNameBottomBar.text = songs[preferences.getSongInfo()].title
-        artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
+        if (songs[preferences.getSongInfo()].artist == "<unknown>")
+            artistNameBottomBar.text = "unknown artist"
+        else
+            artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
         if (mediaPlayer.isPlaying){
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
@@ -113,6 +119,24 @@ class AllSongsFragment : Fragment() {
         }
         return
     }
+
+    fun next(){
+        if (preferences.getShuffleSettings() && !preferences.getLoopSettings()){
+            val rand = Random()
+            val pos = rand.nextInt(songs.size - 0) + 1
+            preferences.setSongInfo(pos)
+            playSong()
+        }else if(preferences.getLoopSettings()){
+            if (mediaPlayer.isPlaying)
+                mediaPlayer.seekTo(0)
+            else{
+                playSong()
+            }
+        }else{
+            playNext()
+        }
+    }
+
     fun playNext(){
         if (preferences.getSongInfo() == (songs.size - 1)){
             preferences.setSongInfo(0)

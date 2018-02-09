@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.SeekBar
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
+import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Fragments.*
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,11 +22,13 @@ class MainActivity : AppCompatActivity(){
     object statified{
         lateinit var mediaPlayer: MediaPlayer
     }
+    lateinit var preferences: SharedPrefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        preferences = SharedPrefs(this)
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -36,6 +39,7 @@ class MainActivity : AppCompatActivity(){
         val bundle = Bundle()
         bundle.putString("where","Main")
         allsongs.arguments = bundle
+        preferences.setFragment(false)
         this.supportFragmentManager
                 .beginTransaction()
                 .add(R.id.frag_holder_main,allsongs)
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity(){
         about.setBackgroundColor(resources.getColor(R.color.white))
     }
     fun all_songs(v: View){
+        preferences.setFragment(false)
         all_songs.setBackgroundColor(resources.getColor(R.color.gray))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))
@@ -61,6 +66,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun favourites(v: View){
+        preferences.setFragment(true)
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.gray))
         settings.setBackgroundColor(resources.getColor(R.color.white))
@@ -72,6 +78,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun settings(v: View){
+        preferences.setFragment(true)
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.gray))
@@ -83,6 +90,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun about(v: View){
+        preferences.setFragment(true)
         all_songs.setBackgroundColor(resources.getColor(R.color.white))
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))
@@ -97,7 +105,17 @@ class MainActivity : AppCompatActivity(){
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
+        }else if (preferences.getFragment()){
+            preferences.setFragment(false)
+            this.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.frag_holder_main,AllSongsFragment())
+                    .commit()
+            all_songs.setBackgroundColor(resources.getColor(R.color.gray))
+            favourites.setBackgroundColor(resources.getColor(R.color.white))
+            settings.setBackgroundColor(resources.getColor(R.color.white))
+            about.setBackgroundColor(resources.getColor(R.color.white))
+        }else {
             super.onBackPressed()
         }
     }
