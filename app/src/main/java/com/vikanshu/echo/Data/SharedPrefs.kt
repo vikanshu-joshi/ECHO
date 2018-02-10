@@ -50,7 +50,6 @@ class SharedPrefs(context: Context){
         val s = preferences.getBoolean(loop,false)
         return s
     }
-
     fun settings(value: Boolean){
         val editor = preferences.edit()
         editor.putBoolean(shaky,value)

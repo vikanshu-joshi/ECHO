@@ -2,6 +2,8 @@ package com.vikanshu.echo.Fragments
 
 
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
@@ -38,7 +40,6 @@ class NowPlayingFragment : Fragment() {
         lateinit var mSensorManager: SensorManager
         lateinit var mSensorListener: SensorEventListener
     }
-
     lateinit var seekBarNow: SeekBar
     lateinit var startTimeText: TextView
     lateinit var songs: ArrayList<SongsData>
@@ -74,6 +75,10 @@ class NowPlayingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mSensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAcceleration = 0.0F
+        mAccelerationCurrent = SensorManager.GRAVITY_EARTH
+        mAccelerationLast = SensorManager.GRAVITY_EARTH
+        shake()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -125,8 +130,8 @@ class NowPlayingFragment : Fragment() {
                 }
             }
             shuffle.setOnClickListener {
-                Toast.makeText(context,"Shuffle Off",Toast.LENGTH_SHORT).show()
                 if (preferences.getShuffleSettings()){
+                    Toast.makeText(context,"Shuffle Off",Toast.LENGTH_SHORT).show()
                     preferences.setShuffleSettings(false)
                     shuffle.setImageResource(R.drawable.shuffle)
                 }else{
@@ -174,6 +179,32 @@ class NowPlayingFragment : Fragment() {
             })
         }
     }
+
+    var mAcceleration: Float = 0F
+    var mAccelerationCurrent: Float = 0F
+    var mAccelerationLast: Float = 0F
+    fun shake(){
+        mSensorListener = object : SensorEventListener{
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+
+            }
+
+            override fun onSensorChanged(event: SensorEvent) {
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+                mAccelerationLast = mAccelerationCurrent
+                mAccelerationCurrent = Math.sqrt(((x*x+y*y+z*z).toDouble())).toFloat()
+                val delta = mAccelerationCurrent - mAccelerationLast
+                mAcceleration = mAcceleration*0.9F + delta
+
+                if (mAcceleration > 20.0 && preferences.readSetting()){
+                    next()
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         audioVisualizationView = visualizer
@@ -183,11 +214,14 @@ class NowPlayingFragment : Fragment() {
         super.onDestroyView()
     }
     override fun onPause() {
+        mSensorManager.unregisterListener(mSensorListener)
         audioVisualizationView.onPause()
         super.onPause()
     }
     override fun onResume() {
         audioVisualizationView.onResume()
+        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL)
         super.onResume()
     }
     fun playSong(){

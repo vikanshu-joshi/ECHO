@@ -2,6 +2,10 @@ package com.vikanshu.echo.Fragments
 
 
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
+import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.mSensorManager
+import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.mSensorListener
 import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Adapters.FavouritesAdapter
 import com.vikanshu.echo.Data.DataBaseFav
@@ -28,6 +34,10 @@ class FavouritesFragment : Fragment() {
     var songsFav: ArrayList<SongsData> ?= null
     lateinit var preferences: SharedPrefs
     lateinit var favContent: DataBaseFav
+    object staticated{
+        lateinit var mSensorManager: SensorManager
+        lateinit var mSensorListener: SensorEventListener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -82,6 +92,46 @@ class FavouritesFragment : Fragment() {
                     next()
                 }
             })
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mSensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAcceleration = 0.0F
+        mAccelerationCurrent = SensorManager.GRAVITY_EARTH
+        mAccelerationLast = SensorManager.GRAVITY_EARTH
+        shake()
+    }
+    override fun onPause() {
+        mSensorManager.unregisterListener(mSensorListener)
+        super.onPause()
+    }
+    override fun onResume() {
+        mSensorManager.registerListener(mSensorListener,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL)
+        super.onResume()
+    }
+    var mAcceleration: Float = 0F
+    var mAccelerationCurrent: Float = 0F
+    var mAccelerationLast: Float = 0F
+    fun shake(){
+        mSensorListener = object : SensorEventListener {
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            }
+            override fun onSensorChanged(event: SensorEvent) {
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+                mAccelerationLast = mAccelerationCurrent
+                mAccelerationCurrent = Math.sqrt(((x*x+y*y+z*z).toDouble())).toFloat()
+                val delta = mAccelerationCurrent - mAccelerationLast
+                mAcceleration = mAcceleration*0.9F + delta
+
+                if (mAcceleration > 20.0 && preferences.readSetting()){
+                    next()
+                }
+            }
         }
     }
     fun updateViews(){
