@@ -41,7 +41,7 @@ class FavouritesAdapter(context: Context?, songsList: ArrayList<SongsData>): Bas
     }
 
     override fun getItemId(position: Int): Long {
-        return 0
+        return songs[position].id
     }
 
     override fun getCount(): Int {

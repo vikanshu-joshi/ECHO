@@ -57,13 +57,11 @@ class FavouritesFragment : Fragment() {
         }else{
             if (songsFav != null) {
                 favList.adapter = FavouritesAdapter(context, songsFav!!)
-//                favList.setOnItemClickListener { parent, view, position, id ->
-//                    mediaPlayer.pause()
-//                    mediaPlayer.reset()
-//                    mediaPlayer.setDataSource(songsFav!![position].path)
-//                    mediaPlayer.prepare()
-//                    mediaPlayer.start()
-//                }
+                favList.setOnItemClickListener { parent, view, position, id ->
+                    preferences.setSongInfo(search(id))
+                    playSong()
+                    updateViews()
+                }
             }else{
                 invisibleFav.visibility = View.VISIBLE
                 invisibleFav.setOnClickListener{}
@@ -93,6 +91,15 @@ class FavouritesFragment : Fragment() {
                 }
             })
         }
+    }
+
+    fun search(id: Long): Int{
+        val n = songs.size - 1
+        var pos = 0
+        for (i in 0..n)
+            if (id == songs[i].id)
+                pos = i
+        return pos
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,27 +147,27 @@ class FavouritesFragment : Fragment() {
             artistNameBottomBar.text = "unknown artist"
         else
             artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
-        if (MainActivity.statified.mediaPlayer.isPlaying){
+        if (mediaPlayer.isPlaying){
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
         return
     }
     fun playSong(){
-        MainActivity.statified.mediaPlayer.pause()
-        MainActivity.statified.mediaPlayer.reset()
+        mediaPlayer.pause()
+        mediaPlayer.reset()
         val pos = preferences.getSongInfo()
-        MainActivity.statified.mediaPlayer.setDataSource(songs[pos].path)
-        MainActivity.statified.mediaPlayer.prepare()
-        MainActivity.statified.mediaPlayer.start()
+        mediaPlayer.setDataSource(songs[pos].path)
+        mediaPlayer.prepare()
+        mediaPlayer.start()
         playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         return
     }
     fun playPause(){
-        if (MainActivity.statified.mediaPlayer.isPlaying){
-            MainActivity.statified.mediaPlayer.pause()
+        if (mediaPlayer.isPlaying){
+            mediaPlayer.pause()
             playPauseBottomBar.setImageResource(R.drawable.play_icon)
         }else{
-            MainActivity.statified.mediaPlayer.start()
+            mediaPlayer.start()
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
         return
