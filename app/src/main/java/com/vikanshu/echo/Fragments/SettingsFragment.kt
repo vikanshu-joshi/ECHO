@@ -37,6 +37,7 @@ class SettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         (activity as AppCompatActivity).supportActionBar!!.show()
+        (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.settings)
         val itemView = inflater.inflate(R.layout.fragment_settings, container, false)
         shakeCheck = itemView.findViewById(R.id.shakeDevice)
         preferences = SharedPrefs(context!!)

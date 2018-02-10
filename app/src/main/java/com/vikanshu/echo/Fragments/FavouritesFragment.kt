@@ -42,6 +42,7 @@ class FavouritesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         (activity as AppCompatActivity).supportActionBar!!.show()
+        (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.favourites)
         preferences = SharedPrefs(context as Context)
         return inflater.inflate(R.layout.fragment_favourites, container, false)
     }

@@ -43,6 +43,7 @@ class AllSongsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         (activity as AppCompatActivity).supportActionBar!!.show()
+        (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.app_name)
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
         songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
