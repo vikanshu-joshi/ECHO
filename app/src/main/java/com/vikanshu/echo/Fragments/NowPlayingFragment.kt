@@ -2,8 +2,11 @@ package com.vikanshu.echo.Fragments
 
 
 import android.content.Context
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -15,11 +18,14 @@ import com.cleveroad.audiovisualization.GLAudioVisualizationView
 import com.vikanshu.echo.Data.SongsData
 import com.vikanshu.echo.R
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
+import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.mSensorManager
+import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.mSensorListener
 import com.vikanshu.echo.Data.SharedPrefs
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 import java.util.concurrent.TimeUnit
 import com.cleveroad.audiovisualization.DbmHandler
 import android.support.v7.app.AppCompatActivity
+import android.widget.TextView
 import android.widget.Toast
 import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Data.DataBaseFav
@@ -28,18 +34,35 @@ import java.util.*
 
 class NowPlayingFragment : Fragment() {
 
+    object staticated{
+        lateinit var mSensorManager: SensorManager
+        lateinit var mSensorListener: SensorEventListener
+    }
+
+    lateinit var seekBarNow: SeekBar
+    lateinit var startTimeText: TextView
     lateinit var songs: ArrayList<SongsData>
     lateinit var preferences: SharedPrefs
     lateinit var visualizer: GLAudioVisualizationView
     lateinit var audioVisualizationView: AudioVisualization
-    lateinit var seekBarNow: SeekBar
     lateinit var favContent: DataBaseFav
     var here = ""
+    var updateSeekBar = object: Runnable{
+        override fun run() {
+            val progress = mediaPlayer.currentPosition
+            val min = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
+            val sec = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
+            startTimeText.text = String.format("%d:%d",(min/60),(sec%60))
+            seekBarNow.progress = progress
+            Handler().postDelayed(this,500)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                      savedInstanceState: Bundle?): View? {
         (activity as AppCompatActivity).supportActionBar!!.hide()
         val itemView = inflater.inflate(R.layout.fragment_now_playing, container, false)
+        startTimeText = itemView.findViewById(R.id.startTime)
         visualizer = itemView.findViewById(R.id.visualizer_view)
         seekBarNow = itemView.findViewById(R.id.seekBar)
         songs = getSongsFromPhone()
@@ -47,6 +70,12 @@ class NowPlayingFragment : Fragment() {
         here = arguments!!.getString("here","All Songs")
         return itemView
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mSensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         favContent = DataBaseFav(context)
@@ -133,16 +162,13 @@ class NowPlayingFragment : Fragment() {
             }
             seekBarNow.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    val min = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
-                    val sec = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
-                    startTime.text = String.format("%d:%d",(min/60),(sec%60))
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
+                    mediaPlayer.seekTo(seekBar?.progress!!)
                 }
 
             })
@@ -176,26 +202,37 @@ class NowPlayingFragment : Fragment() {
         return
     }
     fun updateViews(){
+
+        seekBarNow.progress = 0
+
         if (favContent.checkIfExists(songs[preferences.getSongInfo()].id.toInt()))
             favBtn.setImageResource(R.drawable.favorite_on)
         else
             favBtn.setImageResource(R.drawable.favorite_off)
+
         val min = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
         val sec = TimeUnit.MILLISECONDS.toSeconds(songs[preferences.getSongInfo()].duration)
         endTime.text = String.format("%d:%d",(min/60),(sec%60))
-        startTime.text = "0:0"
+        startTimeText.text = "0:0"
+
+        Handler().postDelayed(updateSeekBar,500)
+
         titleNow.text = songs[preferences.getSongInfo()].title
+
         if (songs[preferences.getSongInfo()].artist == "<unknown>")
             artistNow.text = "unknown artist"
         else
             artistNow.text = songs[preferences.getSongInfo()].artist
-        if (mediaPlayer.isPlaying){
+
+        if (mediaPlayer.isPlaying)
             playPauseNow.setImageResource(R.drawable.pause)
-        }
+
         if (preferences.getShuffleSettings())
             shuffle.setImageResource(R.drawable.shuffle_on)
+
         if (preferences.getLoopSettings())
             loop.setImageResource(R.drawable.loop_on)
+
         return
     }
     fun playPause(){

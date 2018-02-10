@@ -2,6 +2,7 @@ package com.vikanshu.echo.Fragments
 
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
@@ -47,9 +48,11 @@ class FavouritesFragment : Fragment() {
             if (songsFav != null) {
                 favList.adapter = FavouritesAdapter(context, songsFav!!)
 //                favList.setOnItemClickListener { parent, view, position, id ->
-//                    preferences.setSongInfo(position)
-//                    playSong()
-//                    updateViews()
+//                    mediaPlayer.pause()
+//                    mediaPlayer.reset()
+//                    mediaPlayer.setDataSource(songsFav!![position].path)
+//                    mediaPlayer.prepare()
+//                    mediaPlayer.start()
 //                }
             }else{
                 invisibleFav.visibility = View.VISIBLE
@@ -74,6 +77,11 @@ class FavouritesFragment : Fragment() {
                         .replace(R.id.frag_holder_main,nowPlaying)
                         .commit()
             }
+            mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+                override fun onCompletion(mp: MediaPlayer?) {
+                    next()
+                }
+            })
         }
     }
     fun updateViews(){
@@ -132,6 +140,7 @@ class FavouritesFragment : Fragment() {
             preferences.setSongInfo(pos)
             playSong()
         }
+        updateViews()
         return
     }
     fun getSongsFromPhone(): ArrayList<SongsData>{

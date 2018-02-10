@@ -144,6 +144,7 @@ class AllSongsFragment : Fragment() {
             preferences.setSongInfo(pos)
             playSong()
         }
+        updateViews()
         return
     }
     fun getSongsFromPhone(): ArrayList<SongsData>{
