@@ -66,8 +66,8 @@ class NowPlayingFragment : Fragment() {
         startTimeText = itemView.findViewById(R.id.startTime)
         visualizer = itemView.findViewById(R.id.visualizer_view)
         seekBarNow = itemView.findViewById(R.id.seekBar)
-        songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
+        songs = getSongsFromPhone()
         here = arguments!!.getString("here","All Songs")
         return itemView
     }
@@ -336,7 +336,13 @@ class NowPlayingFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
-                arrayList.add(SongsData(tittle,artist,path,album,id,duration))
+                if (preferences.getExcludeSettings()) {
+                    if (duration > 20000)
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
+                else {
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
             }
         }
         songCursor?.close()

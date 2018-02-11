@@ -45,8 +45,8 @@ class AllSongsFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.show()
         (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.app_name)
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
-        songs = getSongsFromPhone()
         preferences = SharedPrefs(context as Context)
+        songs = getSongsFromPhone()
         invisibleLayout = view.findViewById(R.id.invisible)
         visibleLayout = view.findViewById(R.id.visible)
         return view
@@ -218,7 +218,13 @@ class AllSongsFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
-                arrayList.add(SongsData(tittle,artist,path,album,id,duration))
+                if (preferences.getExcludeSettings()) {
+                    if (duration > 20000)
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
+                else {
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
             }
         }
         songCursor?.close()

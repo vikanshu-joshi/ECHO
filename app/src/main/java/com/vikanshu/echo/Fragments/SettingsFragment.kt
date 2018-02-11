@@ -21,12 +21,14 @@ import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
 import com.vikanshu.echo.R
+import kotlinx.android.synthetic.main.fragment_settings.*
 import java.util.*
 
 class SettingsFragment : Fragment() {
 
     lateinit var preferences: SharedPrefs
     lateinit var shakeCheck: CheckBox
+    lateinit var excludeCheck: CheckBox
 
     lateinit var songs: ArrayList<SongsData>
     object staticated{
@@ -40,17 +42,24 @@ class SettingsFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.settings)
         val itemView = inflater.inflate(R.layout.fragment_settings, container, false)
         shakeCheck = itemView.findViewById(R.id.shakeDevice)
+        excludeCheck = itemView.findViewById(R.id.exclude)
         preferences = SharedPrefs(context!!)
         songs = getSongsFromPhone()
         if (preferences.readSetting())
             shakeCheck.isChecked = true
+        if (preferences.getExcludeSettings())
+            excludeCheck.isChecked = true
         return itemView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         shakeCheck.setOnCheckedChangeListener { buttonView, isChecked ->
                 preferences.settings(isChecked)
+        }
+        exclude.setOnCheckedChangeListener { buttonView, isChecked ->
+            preferences.setExcludeSettings(isChecked)
         }
     }
 
@@ -148,7 +157,13 @@ class SettingsFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
-                arrayList.add(SongsData(tittle,artist,path,album,id,duration))
+                if (preferences.getExcludeSettings()) {
+                    if (duration > 20000)
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
+                else {
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
             }
         }
         songCursor?.close()

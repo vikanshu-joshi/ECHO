@@ -220,7 +220,13 @@ class FavouritesFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
-                arrayList.add(SongsData(tittle,artist,path,album,id,duration))
+                if (preferences.getExcludeSettings()) {
+                    if (duration > 20000)
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
+                else {
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
             }
         }
         songCursor?.close()
