@@ -121,7 +121,7 @@ class AboutFragment : Fragment() {
         mediaPlayer.start()
         return
     }
-    fun getSongsFromPhone(): ArrayList<SongsData> {
+    fun getSongsFromPhone(): ArrayList<SongsData>{
         val arrayList = arrayListOf<SongsData>()
         val contentResolver = context?.contentResolver
         val songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -140,7 +140,14 @@ class AboutFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
-                arrayList.add(SongsData(tittle,artist,path,album,id,duration))
+                if (preferences.getExcludeSettings()) {
+                    val time = (preferences.getExcludeTime() * 1000)
+                    if (duration > time)
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
+                else {
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                }
             }
         }
         songCursor?.close()

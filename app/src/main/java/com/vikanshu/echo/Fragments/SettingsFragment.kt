@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.SeekBar
+import android.widget.TextView
 import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
@@ -29,6 +31,8 @@ class SettingsFragment : Fragment() {
     lateinit var preferences: SharedPrefs
     lateinit var shakeCheck: CheckBox
     lateinit var excludeCheck: CheckBox
+    lateinit var excludeSeek: SeekBar
+    lateinit var excludeText: TextView
 
     lateinit var songs: ArrayList<SongsData>
     object staticated{
@@ -43,12 +47,16 @@ class SettingsFragment : Fragment() {
         val itemView = inflater.inflate(R.layout.fragment_settings, container, false)
         shakeCheck = itemView.findViewById(R.id.shakeDevice)
         excludeCheck = itemView.findViewById(R.id.exclude)
+        excludeSeek = itemView.findViewById(R.id.seekBarExclude)
+        excludeText = itemView.findViewById(R.id.excludeText)
         preferences = SharedPrefs(context!!)
         songs = getSongsFromPhone()
         if (preferences.readSetting())
             shakeCheck.isChecked = true
         if (preferences.getExcludeSettings())
             excludeCheck.isChecked = true
+        excludeSeek.progress = preferences.getExcludeTime()
+        excludeText.text = "Exclude files less than " + excludeSeek.progress.toString() + " sec"
         return itemView
     }
 
@@ -61,6 +69,20 @@ class SettingsFragment : Fragment() {
         exclude.setOnCheckedChangeListener { buttonView, isChecked ->
             preferences.setExcludeSettings(isChecked)
         }
+        excludeSeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                preferences.setExcludeTime(progress)
+                excludeText.text = "Exclude files less than " + progress.toString() + " sec"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,7 +180,8 @@ class SettingsFragment : Fragment() {
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
                 if (preferences.getExcludeSettings()) {
-                    if (duration > 20000)
+                    val time = (preferences.getExcludeTime() * 1000)
+                    if (duration > time)
                         arrayList.add(SongsData(tittle, artist, path, album, id, duration))
                 }
                 else {

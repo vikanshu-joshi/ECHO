@@ -337,7 +337,8 @@ class NowPlayingFragment : Fragment() {
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
                 if (preferences.getExcludeSettings()) {
-                    if (duration > 20000)
+                    val time = (preferences.getExcludeTime() * 1000)
+                    if (duration > time)
                         arrayList.add(SongsData(tittle, artist, path, album, id, duration))
                 }
                 else {
