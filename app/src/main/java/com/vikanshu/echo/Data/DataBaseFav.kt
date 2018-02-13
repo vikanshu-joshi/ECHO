@@ -18,11 +18,12 @@ class DataBaseFav: SQLiteOpenHelper{
         var COLUMN_DURATION = "Duration"
         var COLUMN_ID = "ID"
         var DB_VERSION = 1
+        var SIZE = "SIZE"
         var DB_NAME = "EchoDB"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("CREATE TABLE Favourites(Title String, Artist String, Path String, Duration Integer, ID Integer);")
+        db?.execSQL("CREATE TABLE Favourites(Title String, Artist String, Path String, Duration Integer, ID Integer, SIZE Integer);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -34,7 +35,7 @@ class DataBaseFav: SQLiteOpenHelper{
     constructor(context: Context?) :
             super(context, static.DB_NAME, null, static.DB_VERSION)
 
-    fun store(title: String,artist: String,path: String,duration: Long,id: Int){
+    fun store(title: String,artist: String,path: String,duration: Long,id: Int,size: Long){
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(static.COLUMN_TITLE,title)
@@ -42,6 +43,7 @@ class DataBaseFav: SQLiteOpenHelper{
         contentValues.put(static.COLUMN_PATH,path)
         contentValues.put(static.COLUMN_DURATION,duration)
         contentValues.put(static.COLUMN_ID,id)
+        contentValues.put(static.SIZE,size)
         db.insert(static.TABLE_NAME,null,contentValues)
         db.close()
     }
@@ -57,7 +59,8 @@ class DataBaseFav: SQLiteOpenHelper{
                 val path = csor.getString(csor.getColumnIndexOrThrow(static.COLUMN_PATH))
                 val duration = csor.getLong(csor.getColumnIndexOrThrow(static.COLUMN_DURATION))
                 val id = csor.getInt(csor.getColumnIndexOrThrow(static.COLUMN_ID))
-                list.add(SongsData(title,artist,path,"unknown",id.toLong(),duration))
+                val size = csor.getLong(csor.getColumnIndexOrThrow(static.SIZE))
+                list.add(SongsData(title,artist,path,"unknown",id.toLong(),duration,size))
             }while (csor.moveToNext())
         }else{
             return null

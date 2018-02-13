@@ -161,7 +161,7 @@ class NowPlayingFragment : Fragment() {
                     favBtn.setImageResource(R.drawable.favorite_on)
                     favContent.store(songs[preferences.getSongInfo()].title,songs[preferences.getSongInfo()].artist,
                             songs[preferences.getSongInfo()].path,songs[preferences.getSongInfo()].duration,
-                            songs[preferences.getSongInfo()].id.toInt())
+                            songs[preferences.getSongInfo()].id.toInt(),songs[preferences.getSongInfo()].size)
                     Toast.makeText(context,"Added to Favourites",Toast.LENGTH_SHORT).show()
                 }
             }
@@ -329,6 +329,7 @@ class NowPlayingFragment : Fragment() {
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
             val songPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
+            val songSize = songCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)
             while(songCursor.moveToNext()){
                 val id = songCursor.getLong(songID)
                 val duration =  songCursor.getLong(songDuration)
@@ -336,13 +337,14 @@ class NowPlayingFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
+                val size = songCursor.getLong(songSize)
                 if (preferences.getExcludeSettings()) {
                     val time = (preferences.getExcludeTime() * 1000)
                     if (duration > time)
-                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration,size))
                 }
                 else {
-                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration,size))
                 }
             }
         }

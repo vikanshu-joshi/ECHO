@@ -18,4 +18,5 @@
     <string name="your_favourites_list_is_empty">Your Favourites list is Empty</string>
     <string name="shake_device_to_change_song">Shake Device to Change Song</string>
     <string name="exclude_files_less_than_10_sec">Exclude files less than 20 sec</string>
+    <string name="song_info">Song Info</string>
 </resources>

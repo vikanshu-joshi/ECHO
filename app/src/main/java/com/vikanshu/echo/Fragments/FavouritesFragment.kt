@@ -75,6 +75,7 @@ class FavouritesFragment : Fragment() {
                     val alertAlbum = dialogView.findViewById<TextView>(R.id.albumAlert)
                     val alertDuration = dialogView.findViewById<TextView>(R.id.durationAlert)
                     val alertPath = dialogView.findViewById<TextView>(R.id.pathAlert)
+                    val alertSize = dialogView.findViewById<TextView>(R.id.sizeAlert)
 
                     val min = TimeUnit.MILLISECONDS.toSeconds(songsFav!![position].duration)
                     val sec = TimeUnit.MILLISECONDS.toSeconds(songsFav!![position].duration)
@@ -83,6 +84,7 @@ class FavouritesFragment : Fragment() {
                     alertTitle.text = "title :  " + songsFav!![position].title
                     alertPath.text = "location :  " + songsFav!![position].path
                     alertDuration.text = "duration :  " + time
+                    alertSize.text = "size :  " + (songsFav!![position].size / 1000000).toString() + " MB"
                     if (songsFav!![position].artist == "<unknown>"){
                         alertArtist.text = "artist :  unknown"
                     }else{
@@ -247,6 +249,7 @@ class FavouritesFragment : Fragment() {
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
             val songPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
+            val songSize = songCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)
             while(songCursor.moveToNext()){
                 val id = songCursor.getLong(songID)
                 val duration =  songCursor.getLong(songDuration)
@@ -254,13 +257,14 @@ class FavouritesFragment : Fragment() {
                 val artist =  songCursor.getString(songArtist)
                 val path =  songCursor.getString(songPath)
                 val album =  songCursor.getString(songAlbum)
+                val size = songCursor.getLong(songSize)
                 if (preferences.getExcludeSettings()) {
                     val time = (preferences.getExcludeTime() * 1000)
                     if (duration > time)
-                        arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                        arrayList.add(SongsData(tittle, artist, path, album, id, duration,size))
                 }
                 else {
-                    arrayList.add(SongsData(tittle, artist, path, album, id, duration))
+                    arrayList.add(SongsData(tittle, artist, path, album, id, duration,size))
                 }
             }
         }
