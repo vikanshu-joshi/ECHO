@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,8 +26,10 @@ import com.vikanshu.echo.Fragments.AllSongsFragment.staticated.mSensorListener
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
 import kotlinx.android.synthetic.main.fragment_all_songs.*
-import kotlinx.android.synthetic.main.fragment_now_playing.*
 import java.util.*
+import android.widget.TextView
+import java.util.concurrent.TimeUnit
+
 
 class AllSongsFragment : Fragment() {
 
@@ -81,6 +84,36 @@ class AllSongsFragment : Fragment() {
             preferences.setSongInfo(position)
             playSong()
             updateViews()
+        }
+        songsList.setOnItemLongClickListener { parent, view, position, id ->
+            val dialog = AlertDialog.Builder(context!!)
+            val dialogView = layoutInflater.inflate(R.layout.alert_box,null)
+            val alertTitle = dialogView.findViewById<TextView>(R.id.titleAlert)
+            val alertArtist = dialogView.findViewById<TextView>(R.id.artistAlert)
+            val alertAlbum = dialogView.findViewById<TextView>(R.id.albumAlert)
+            val alertDuration = dialogView.findViewById<TextView>(R.id.durationAlert)
+            val alertPath = dialogView.findViewById<TextView>(R.id.pathAlert)
+
+            val min = TimeUnit.MILLISECONDS.toSeconds(songs[position].duration)
+            val sec = TimeUnit.MILLISECONDS.toSeconds(songs[position].duration)
+            val time = String.format("%d:%d",(min/60),(sec%60))
+
+            alertTitle.text = "title :  " + songs[position].title
+            alertPath.text = "location :  " + songs[position].path
+            alertDuration.text = "duration :  " + time
+            if (songs[position].artist == "<unknown>"){
+                alertArtist.text = "artist :  unknown"
+            }else{
+                alertArtist.text = "artist :  " + songs[position].artist
+            }
+            if (songs[position].album == "<unknown>"){
+                alertAlbum.text = "album :  unknown"
+            }else{
+                alertAlbum.text = "album :  " + songs[position].album
+            }
+            dialog.setView(dialogView)
+            dialog.show()
+            true
         }
         mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
             override fun onCompletion(mp: MediaPlayer?) {
@@ -139,7 +172,6 @@ class AllSongsFragment : Fragment() {
             }
         }
     }
-
     fun updateViews(){
         songNameBottomBar.text = songs[preferences.getSongInfo()].title
         if (songs[preferences.getSongInfo()].artist == "<unknown>")

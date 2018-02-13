@@ -10,10 +10,12 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.mSensorManager
 import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.mSensorListener
@@ -24,8 +26,10 @@ import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
+import kotlinx.android.synthetic.main.fragment_all_songs.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class FavouritesFragment : Fragment() {
@@ -62,6 +66,36 @@ class FavouritesFragment : Fragment() {
                     preferences.setSongInfo(search(id))
                     playSong()
                     updateViews()
+                }
+                favList.setOnItemLongClickListener { parent, view, position, id ->
+                    val dialog = AlertDialog.Builder(context!!)
+                    val dialogView = layoutInflater.inflate(R.layout.alert_box,null)
+                    val alertTitle = dialogView.findViewById<TextView>(R.id.titleAlert)
+                    val alertArtist = dialogView.findViewById<TextView>(R.id.artistAlert)
+                    val alertAlbum = dialogView.findViewById<TextView>(R.id.albumAlert)
+                    val alertDuration = dialogView.findViewById<TextView>(R.id.durationAlert)
+                    val alertPath = dialogView.findViewById<TextView>(R.id.pathAlert)
+
+                    val min = TimeUnit.MILLISECONDS.toSeconds(songsFav!![position].duration)
+                    val sec = TimeUnit.MILLISECONDS.toSeconds(songsFav!![position].duration)
+                    val time = String.format("%d:%d",(min/60),(sec%60))
+
+                    alertTitle.text = "title :  " + songsFav!![position].title
+                    alertPath.text = "location :  " + songsFav!![position].path
+                    alertDuration.text = "duration :  " + time
+                    if (songsFav!![position].artist == "<unknown>"){
+                        alertArtist.text = "artist :  unknown"
+                    }else{
+                        alertArtist.text = "artist :  " + songsFav!![position].artist
+                    }
+                    if (songsFav!![position].album == "<unknown>"){
+                        alertAlbum.text = "album :  unknown"
+                    }else{
+                        alertAlbum.text = "album :  " + songsFav!![position].album
+                    }
+                    dialog.setView(dialogView)
+                    dialog.show()
+                    true
                 }
             }else{
                 invisibleFav.visibility = View.VISIBLE
