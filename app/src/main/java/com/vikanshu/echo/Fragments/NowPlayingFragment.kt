@@ -53,7 +53,7 @@ class NowPlayingFragment : Fragment() {
     var here = ""
     var updateSeekBar = object: Runnable{
         override fun run() {
-            val progress = mediaPlayer.currentPosition
+            val progress = mediaPlayer!!.currentPosition
             val min = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
             val sec = TimeUnit.MILLISECONDS.toSeconds(progress.toLong())
             startTimeText.text = String.format("%d:%d",(min/60),(sec%60))
@@ -100,10 +100,11 @@ class NowPlayingFragment : Fragment() {
             playPrevNow.setOnClickListener {
                 playPrev()
             }
-            mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+            mediaPlayer?.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                 override fun onCompletion(mp: MediaPlayer?) {
                     next()
                 }
+
             })
             val vizualizerHandler = DbmHandler.Factory.newVisualizerHandler(context as Context, 0)
             audioVisualizationView.linkTo(vizualizerHandler)
@@ -177,7 +178,7 @@ class NowPlayingFragment : Fragment() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mediaPlayer.seekTo(seekBar?.progress!!)
+                    mediaPlayer!!.seekTo(seekBar?.progress!!)
                 }
 
             })
@@ -233,12 +234,12 @@ class NowPlayingFragment : Fragment() {
         super.onResume()
     }
     fun playSong(){
-        mediaPlayer.pause()
-        mediaPlayer.reset()
+        mediaPlayer!!.pause()
+        mediaPlayer!!.reset()
         val pos = preferences.getSongInfo()
-        mediaPlayer.setDataSource(songs[pos].path)
-        mediaPlayer.prepare()
-        mediaPlayer.start()
+        mediaPlayer!!.setDataSource(songs[pos].path)
+        mediaPlayer!!.prepare()
+        mediaPlayer!!.start()
         updateViews()
         playPauseNow.setImageResource(R.drawable.pause)
         return
@@ -266,7 +267,7 @@ class NowPlayingFragment : Fragment() {
         else
             artistNow.text = songs[preferences.getSongInfo()].artist
 
-        if (mediaPlayer.isPlaying)
+        if (mediaPlayer!!.isPlaying)
             playPauseNow.setImageResource(R.drawable.pause)
 
         if (preferences.getShuffleSettings())
@@ -278,11 +279,11 @@ class NowPlayingFragment : Fragment() {
         return
     }
     fun playPause(){
-        if (mediaPlayer.isPlaying){
-            mediaPlayer.pause()
+        if (mediaPlayer!!.isPlaying){
+            mediaPlayer!!.pause()
             playPauseNow.setImageResource(R.drawable.play)
         }else{
-            mediaPlayer.start()
+            mediaPlayer!!.start()
             playPauseNow.setImageResource(R.drawable.pause)
         }
         return
@@ -294,8 +295,8 @@ class NowPlayingFragment : Fragment() {
             preferences.setSongInfo(pos)
             playSong()
         }else if(preferences.getLoopSettings()){
-            if (mediaPlayer.isPlaying)
-                mediaPlayer.seekTo(0)
+            if (mediaPlayer!!.isPlaying)
+                mediaPlayer!!.seekTo(0)
             else{
                 playSong()
             }

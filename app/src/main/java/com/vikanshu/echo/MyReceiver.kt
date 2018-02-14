@@ -14,8 +14,8 @@ import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.ppNow
 class MyReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL && MainActivity.statified.mediaPlayer.isPlaying) {
-            MainActivity.statified.mediaPlayer.pause()
+        if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL && MainActivity.statified.mediaPlayer?.isPlaying as Boolean) {
+            MainActivity.statified.mediaPlayer?.pause()
             ppNow?.setImageResource(R.drawable.play)
             ppBottomFav?.setImageResource(R.drawable.play_icon)
             ppBottomAll?.setImageResource(R.drawable.play_icon)
@@ -24,8 +24,8 @@ class MyReceiver : BroadcastReceiver() {
             val tm: TelephonyManager = context.getSystemService(Service.TELEPHONY_SERVICE) as TelephonyManager
             when (tm.callState){
                 TelephonyManager.CALL_STATE_RINGING -> {
-                    if (MainActivity.statified.mediaPlayer.isPlaying){
-                        MainActivity.statified.mediaPlayer.pause()
+                    if (MainActivity.statified.mediaPlayer?.isPlaying as Boolean){
+                        MainActivity.statified.mediaPlayer?.pause()
                         ppNow?.setImageResource(R.drawable.play)
                         ppBottomFav?.setImageResource(R.drawable.play_icon)
                         ppBottomAll?.setImageResource(R.drawable.play_icon)
@@ -34,8 +34,8 @@ class MyReceiver : BroadcastReceiver() {
             }
         }
         if (intent.action == Intent.ACTION_HEADSET_PLUG){
-            if (MainActivity.statified.mediaPlayer.isPlaying){
-                MainActivity.statified.mediaPlayer.pause()
+            if (MainActivity.statified.mediaPlayer?.isPlaying as Boolean){
+                MainActivity.statified.mediaPlayer?.pause()
                 ppNow?.setImageResource(R.drawable.play)
                 ppBottomFav?.setImageResource(R.drawable.play_icon)
                 ppBottomAll?.setImageResource(R.drawable.play_icon)

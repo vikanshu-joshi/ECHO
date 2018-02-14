@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.fragment_favourites.*
 class MainActivity : AppCompatActivity(){
 
     object statified{
-        lateinit var mediaPlayer: MediaPlayer
+        var mediaPlayer: MediaPlayer ?= null
     }
     lateinit var preferences: SharedPrefs
     lateinit var reciever: MyReceiver
@@ -58,8 +58,6 @@ class MainActivity : AppCompatActivity(){
         filter = IntentFilter()
         filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
         filter.addAction(Intent.ACTION_HEADSET_PLUG)
-        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
-        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
         registerReceiver(reciever,filter)
         preferences = SharedPrefs(this)
         val toggle = ActionBarDrawerToggle(
@@ -67,7 +65,7 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
         val allsongs = AllSongsFragment()
         val bundle = Bundle()
         bundle.putString("where","Main")

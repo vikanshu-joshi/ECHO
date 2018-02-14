@@ -127,7 +127,7 @@ class FavouritesFragment : Fragment() {
                         .replace(R.id.frag_holder_main,nowPlaying)
                         .commit()
             }
-            mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+            mediaPlayer!!.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                 override fun onCompletion(mp: MediaPlayer?) {
                     next()
                 }
@@ -189,27 +189,27 @@ class FavouritesFragment : Fragment() {
             artistNameBottomBar.text = "unknown artist"
         else
             artistNameBottomBar.text = songs[preferences.getSongInfo()].artist
-        if (mediaPlayer.isPlaying){
+        if (mediaPlayer!!.isPlaying){
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
         return
     }
     fun playSong(){
-        mediaPlayer.pause()
-        mediaPlayer.reset()
+        mediaPlayer!!.pause()
+        mediaPlayer!!.reset()
         val pos = preferences.getSongInfo()
-        mediaPlayer.setDataSource(songs[pos].path)
-        mediaPlayer.prepare()
-        mediaPlayer.start()
+        mediaPlayer!!.setDataSource(songs[pos].path)
+        mediaPlayer!!.prepare()
+        mediaPlayer!!.start()
         playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         return
     }
     fun playPause(){
-        if (mediaPlayer.isPlaying){
-            mediaPlayer.pause()
+        if (mediaPlayer!!.isPlaying){
+            mediaPlayer!!.pause()
             playPauseBottomBar.setImageResource(R.drawable.play_icon)
         }else{
-            mediaPlayer.start()
+            mediaPlayer!!.start()
             playPauseBottomBar.setImageResource(R.drawable.pause_icon)
         }
         return
@@ -221,8 +221,8 @@ class FavouritesFragment : Fragment() {
             preferences.setSongInfo(pos)
             playSong()
         }else if(preferences.getLoopSettings()){
-            if (mediaPlayer.isPlaying)
-                mediaPlayer.seekTo(0)
+            if (mediaPlayer!!.isPlaying)
+                mediaPlayer!!.seekTo(0)
             else{
                 playSong()
             }

@@ -131,8 +131,8 @@ class SettingsFragment : Fragment() {
             preferences.setSongInfo(pos)
             playSong()
         }else if(preferences.getLoopSettings()){
-            if (mediaPlayer.isPlaying)
-                mediaPlayer.seekTo(0)
+            if (mediaPlayer!!.isPlaying)
+                mediaPlayer!!.seekTo(0)
             else{
                 playSong()
             }
@@ -152,12 +152,12 @@ class SettingsFragment : Fragment() {
         return
     }
     fun playSong(){
-        mediaPlayer.pause()
-        mediaPlayer.reset()
+        mediaPlayer!!.pause()
+        mediaPlayer!!.reset()
         val pos = preferences.getSongInfo()
-        MainActivity.statified.mediaPlayer.setDataSource(songs[pos].path)
-        MainActivity.statified.mediaPlayer.prepare()
-        MainActivity.statified.mediaPlayer.start()
+        MainActivity.statified.mediaPlayer!!.setDataSource(songs[pos].path)
+        MainActivity.statified.mediaPlayer!!.prepare()
+        MainActivity.statified.mediaPlayer!!.start()
         return
     }
     fun getSongsFromPhone(): ArrayList<SongsData>{
