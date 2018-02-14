@@ -21,6 +21,8 @@
 */
 package com.vikanshu.echo.Activities
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -28,10 +30,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.ImageView
 import android.widget.SeekBar
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Fragments.*
+import com.vikanshu.echo.MyReceiver
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -44,11 +48,19 @@ class MainActivity : AppCompatActivity(){
         lateinit var mediaPlayer: MediaPlayer
     }
     lateinit var preferences: SharedPrefs
-
+    lateinit var reciever: MyReceiver
+    lateinit var filter: IntentFilter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        reciever = MyReceiver()
+        filter = IntentFilter()
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
+        filter.addAction(Intent.ACTION_HEADSET_PLUG)
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
+        registerReceiver(reciever,filter)
         preferences = SharedPrefs(this)
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -122,7 +134,10 @@ class MainActivity : AppCompatActivity(){
                 .commit()
         drawer_layout.closeDrawers()
     }
-
+    override fun onDestroy() {
+        unregisterReceiver(reciever)
+        super.onDestroy()
+    }
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)

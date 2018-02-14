@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.mSensorManager
@@ -24,6 +25,7 @@ import com.vikanshu.echo.Adapters.FavouritesAdapter
 import com.vikanshu.echo.Data.DataBaseFav
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Data.SongsData
+import com.vikanshu.echo.Fragments.FavouritesFragment.staticated.ppBottomFav
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.bottom_bar.*
 import kotlinx.android.synthetic.main.fragment_all_songs.*
@@ -41,6 +43,7 @@ class FavouritesFragment : Fragment() {
     object staticated{
         lateinit var mSensorManager: SensorManager
         lateinit var mSensorListener: SensorEventListener
+        var ppBottomFav: ImageView ?= null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +51,9 @@ class FavouritesFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar!!.show()
         (activity as AppCompatActivity).supportActionBar!!.title = resources.getText(R.string.favourites)
         preferences = SharedPrefs(context as Context)
-        return inflater.inflate(R.layout.fragment_favourites, container, false)
+        val itemView = inflater.inflate(R.layout.fragment_favourites, container, false)
+        ppBottomFav = itemView.findViewById(R.id.playPauseBottomBar)
+        return itemView
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

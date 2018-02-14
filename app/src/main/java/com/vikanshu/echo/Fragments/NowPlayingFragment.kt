@@ -27,10 +27,12 @@ import kotlinx.android.synthetic.main.fragment_now_playing.*
 import java.util.concurrent.TimeUnit
 import com.cleveroad.audiovisualization.DbmHandler
 import android.support.v7.app.AppCompatActivity
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Data.DataBaseFav
+import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.ppNow
 import java.util.*
 
 
@@ -39,6 +41,7 @@ class NowPlayingFragment : Fragment() {
     object staticated{
         lateinit var mSensorManager: SensorManager
         lateinit var mSensorListener: SensorEventListener
+        var ppNow: ImageView ?= null
     }
     lateinit var seekBarNow: SeekBar
     lateinit var startTimeText: TextView
@@ -63,6 +66,7 @@ class NowPlayingFragment : Fragment() {
                                      savedInstanceState: Bundle?): View? {
         (activity as AppCompatActivity).supportActionBar!!.hide()
         val itemView = inflater.inflate(R.layout.fragment_now_playing, container, false)
+        ppNow = itemView.findViewById(R.id.playPauseNow)
         startTimeText = itemView.findViewById(R.id.startTime)
         visualizer = itemView.findViewById(R.id.visualizer_view)
         seekBarNow = itemView.findViewById(R.id.seekBar)
@@ -217,6 +221,10 @@ class NowPlayingFragment : Fragment() {
         mSensorManager.unregisterListener(mSensorListener)
         audioVisualizationView.onPause()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
     override fun onResume() {
         audioVisualizationView.onResume()

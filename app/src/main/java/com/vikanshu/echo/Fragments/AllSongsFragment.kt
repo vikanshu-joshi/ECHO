@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.vikanshu.echo.Activities.MainActivity
 import com.vikanshu.echo.Adapters.SongsListAdapter
 import com.vikanshu.echo.Data.SharedPrefs
@@ -28,6 +29,7 @@ import kotlinx.android.synthetic.main.bottom_bar.*
 import kotlinx.android.synthetic.main.fragment_all_songs.*
 import java.util.*
 import android.widget.TextView
+import com.vikanshu.echo.Fragments.AllSongsFragment.staticated.ppBottomAll
 import java.util.concurrent.TimeUnit
 
 
@@ -41,6 +43,7 @@ class AllSongsFragment : Fragment() {
     object staticated{
         lateinit var mSensorManager: SensorManager
         lateinit var mSensorListener: SensorEventListener
+        var ppBottomAll: ImageView ?= null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +55,7 @@ class AllSongsFragment : Fragment() {
         songs = getSongsFromPhone()
         invisibleLayout = view.findViewById(R.id.invisible)
         visibleLayout = view.findViewById(R.id.visible)
+        ppBottomAll = view.findViewById(R.id.playPauseBottomBar)
         return view
     }
 
