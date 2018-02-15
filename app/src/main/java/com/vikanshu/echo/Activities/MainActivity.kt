@@ -30,8 +30,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.ImageView
-import android.widget.SeekBar
+import com.vikanshu.echo.Activities.MainActivity.statified.discArray
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Fragments.*
@@ -39,13 +38,12 @@ import com.vikanshu.echo.MyReceiver
 import com.vikanshu.echo.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.fragment_all_songs.*
-import kotlinx.android.synthetic.main.fragment_favourites.*
 
 class MainActivity : AppCompatActivity(){
 
     object statified{
-        var mediaPlayer: MediaPlayer ?= null
+        var mediaPlayer = MediaPlayer()
+        lateinit var discArray: ArrayList<Int>
     }
     lateinit var preferences: SharedPrefs
     lateinit var reciever: MyReceiver
@@ -54,6 +52,11 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        discArray = arrayListOf<Int>(R.drawable.one,R.drawable.two,R.drawable.three,R.drawable.four,R.drawable.five,R.drawable.six,
+                R.drawable.seven,R.drawable.eight,R.drawable.nine,R.drawable.ten,R.drawable.eleven,R.drawable.twelve,R.drawable.thirteen,R.drawable.fourteen,
+                R.drawable.fifteen,R.drawable.sixteen,R.drawable.seventeen,R.drawable.eighteen,R.drawable.nineteen,R.drawable.twenty,R.drawable.twentyone,R.drawable.twentytwo,
+                R.drawable.twentythree,R.drawable.twentyfour,R.drawable.twentyfive,R.drawable.twentysix,R.drawable.twentyseven,R.drawable.twentyeight,R.drawable.twentynine,R.drawable.thiry,
+                R.drawable.thirtyone,R.drawable.thirtytwo,R.drawable.thirtythree,R.drawable.thirtyfour,R.drawable.thirtyfive,R.drawable.thirtysix,R.drawable.thirtyseven)
         reciever = MyReceiver()
         filter = IntentFilter()
         filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
@@ -64,8 +67,7 @@ class MainActivity : AppCompatActivity(){
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
         val allsongs = AllSongsFragment()
         val bundle = Bundle()
         bundle.putString("where","Main")
@@ -134,6 +136,7 @@ class MainActivity : AppCompatActivity(){
     }
     override fun onDestroy() {
         unregisterReceiver(reciever)
+        preferences.setThread(false)
         super.onDestroy()
     }
     override fun onBackPressed() {

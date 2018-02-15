@@ -33,6 +33,7 @@ class SettingsFragment : Fragment() {
     lateinit var excludeCheck: CheckBox
     lateinit var excludeSeek: SeekBar
     lateinit var excludeText: TextView
+    lateinit var checkThread: CheckBox
 
     lateinit var songs: ArrayList<SongsData>
     object staticated{
@@ -49,12 +50,15 @@ class SettingsFragment : Fragment() {
         excludeCheck = itemView.findViewById(R.id.exclude)
         excludeSeek = itemView.findViewById(R.id.seekBarExclude)
         excludeText = itemView.findViewById(R.id.excludeText)
+        checkThread = itemView.findViewById(R.id.threadCheck)
         preferences = SharedPrefs(context!!)
         songs = getSongsFromPhone()
         if (preferences.readSetting())
             shakeCheck.isChecked = true
         if (preferences.getExcludeSettings())
             excludeCheck.isChecked = true
+        if (preferences.getThread())
+            checkThread.isChecked = true
         excludeSeek.progress = preferences.getExcludeTime()
         excludeText.text = "Exclude files less than " + excludeSeek.progress.toString() + " sec"
         return itemView
@@ -68,6 +72,9 @@ class SettingsFragment : Fragment() {
         }
         exclude.setOnCheckedChangeListener { buttonView, isChecked ->
             preferences.setExcludeSettings(isChecked)
+        }
+        checkThread.setOnCheckedChangeListener { buttonView, isChecked ->
+            preferences.setThread(isChecked)
         }
         excludeSeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

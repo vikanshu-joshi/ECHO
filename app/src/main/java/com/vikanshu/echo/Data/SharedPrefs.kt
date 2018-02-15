@@ -14,6 +14,7 @@ class SharedPrefs(context: Context){
     val shaky = "shaky"
     val exclude = "exclude"
     val time = "time"
+    val thread = "thread"
     val preferences = context.getSharedPreferences(pref,Context.MODE_PRIVATE)
 
     fun getSongInfo(): Int {
@@ -83,5 +84,16 @@ class SharedPrefs(context: Context){
     fun getExcludeTime(): Int{
         val time = preferences.getInt(time,10)
         return time
+    }
+
+    fun setThread(value: Boolean){
+        val editor = preferences.edit()
+        editor.putBoolean(thread,value)
+        editor.apply()
+    }
+
+    fun getThread(): Boolean{
+        val state = preferences.getBoolean(thread,false)
+        return state
     }
 }
