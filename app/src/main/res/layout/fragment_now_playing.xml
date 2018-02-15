@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="casual"
-            android:text="Now Playing"
+            android:text="@string/now_playing"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="24sp"
@@ -50,7 +50,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/nowPlaying"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nowPlaying"
-            app:srcCompat="@drawable/drop" />
+            app:srcCompat="@drawable/drop"
+            android:contentDescription="@string/logo" />
 
         <ImageView
             android:id="@+id/favBtn"
@@ -62,7 +63,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/nowPlaying"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nowPlaying"
-            app:srcCompat="@drawable/favorite_off" />
+            app:srcCompat="@drawable/favorite_off"
+            android:contentDescription="@string/logo" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -80,10 +82,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="25dp"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@+id/playPauseNow"
-            app:layout_constraintEnd_toStartOf="@+id/endTime"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/startTime" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/playPauseNow"
@@ -95,7 +101,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/play" />
+            app:srcCompat="@drawable/play"
+            android:contentDescription="@string/logo" />
 
         <ImageView
             android:id="@+id/playNextNow"
@@ -108,7 +115,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
             app:layout_constraintStart_toEndOf="@+id/playPauseNow"
             app:layout_constraintTop_toTopOf="@+id/playPauseNow"
-            app:srcCompat="@drawable/next" />
+            app:srcCompat="@drawable/next"
+            android:contentDescription="@string/logo"  />
 
         <ImageView
             android:id="@+id/playPrevNow"
@@ -121,7 +129,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/playPauseNow"
             app:layout_constraintEnd_toStartOf="@+id/playPauseNow"
             app:layout_constraintTop_toTopOf="@+id/playPauseNow"
-            app:srcCompat="@drawable/prev" />
+            app:srcCompat="@drawable/prev"
+            android:contentDescription="@string/logo"  />
 
         <ImageView
             android:id="@+id/shuffle"
@@ -134,7 +143,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/playNextNow"
             app:layout_constraintStart_toEndOf="@+id/playNextNow"
             app:layout_constraintTop_toTopOf="@+id/playNextNow"
-            app:srcCompat="@drawable/shuffle" />
+            app:srcCompat="@drawable/shuffle"
+            android:contentDescription="@string/logo"  />
 
         <ImageView
             android:id="@+id/loop"
@@ -147,7 +157,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/playPrevNow"
             app:layout_constraintEnd_toStartOf="@+id/playPrevNow"
             app:layout_constraintTop_toTopOf="@+id/playPrevNow"
-            app:srcCompat="@drawable/loop" />
+            app:srcCompat="@drawable/loop"
+            android:contentDescription="@string/logo"  />
 
         <TextView
             android:id="@+id/artistNow"
@@ -216,13 +227,26 @@
 
         <ImageView
             android:id="@+id/disc"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
             android:layout_marginBottom="40dp"
+            android:layout_marginEnd="20dp"
+            android:contentDescription="@string/logo"
             app:layout_constraintBottom_toTopOf="@id/titleNow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/disc" />
+
+        <ImageView
+            android:id="@+id/holder"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_marginStart="128dp"
+            app:layout_constraintBottom_toBottomOf="@+id/disc"
+            app:layout_constraintStart_toStartOf="@+id/disc"
+            app:layout_constraintTop_toTopOf="@+id/disc"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/holder" />
 
     </android.support.constraint.ConstraintLayout>
 

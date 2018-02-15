@@ -14,9 +14,9 @@
     <string name="there_are_no_songs_on_your_device_at_the_moment">There are no songs on your device at the moment</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="playprev">playPrev</string>
-    <string name="now_playing">Now Playing</string>
     <string name="your_favourites_list_is_empty">Your Favourites list is Empty</string>
     <string name="shake_device_to_change_song">Shake Device to Change Song</string>
     <string name="exclude_files_less_than_10_sec">Exclude files less than 20 sec</string>
     <string name="song_info">Song Info</string>
+    <string name="now_playing">Now Playing</string>
 </resources>
