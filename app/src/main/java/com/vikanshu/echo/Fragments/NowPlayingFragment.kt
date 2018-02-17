@@ -28,7 +28,6 @@ import com.cleveroad.audiovisualization.DbmHandler
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
 import com.vikanshu.echo.Activities.MainActivity
-import com.vikanshu.echo.Activities.MainActivity.statified.discArray
 import com.vikanshu.echo.Data.DataBaseFav
 import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.discImage
 import com.vikanshu.echo.Fragments.NowPlayingFragment.staticated.i
@@ -43,7 +42,7 @@ class NowPlayingFragment : Fragment() {
         lateinit var mSensorListener: SensorEventListener
         var ppNow: ImageView ?= null
         var discImage: ImageView ?= null
-        var i = 0
+        var i = 0f
     }
     lateinit var seekBarNow: SeekBar
     lateinit var startTimeText: TextView
@@ -62,11 +61,11 @@ class NowPlayingFragment : Fragment() {
             startTimeText.text = String.format("%d:%d",(min/60),(sec%60))
             seekBarNow.progress = progress
             if (mediaPlayer.isPlaying) {
-                if (i == 37) i = 0
-                discImage?.setImageResource(discArray[i])
-                i+=1
+                i += 1
+                if (i == 360f) i = 0f
+                discImage?.rotation = i
             }
-            Handler().postDelayed(this,100)
+            Handler().postDelayed(this,10)
         }
     }
 
@@ -83,13 +82,13 @@ class NowPlayingFragment : Fragment() {
         mainHolder = itemView.findViewById(R.id.mainHolderNow)
         if (preferences.getThread()){
             visualizer.visibility = View.INVISIBLE
+            visualizer.release()
             mainHolder.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark))
         }
         songs = getSongsFromPhone()
         here = arguments!!.getString("here","All Songs")
         return itemView
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mSensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -98,7 +97,6 @@ class NowPlayingFragment : Fragment() {
         mAccelerationLast = SensorManager.GRAVITY_EARTH
         shake()
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         favContent = DataBaseFav(context)
@@ -114,12 +112,10 @@ class NowPlayingFragment : Fragment() {
             playPrevNow.setOnClickListener {
                 playPrev()
             }
-            mediaPlayer.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
-                override fun onCompletion(mp: MediaPlayer?) {
-                    next()
-                }
-
-            })
+            discImage?.setOnClickListener {
+                playPause()
+            }
+            mediaPlayer.setOnCompletionListener { next() }
             val vizualizerHandler = DbmHandler.Factory.newVisualizerHandler(context as Context, 0)
             audioVisualizationView.linkTo(vizualizerHandler)
             nowPlaying.setOnClickListener {
@@ -198,7 +194,6 @@ class NowPlayingFragment : Fragment() {
             })
         }
     }
-
     var mAcceleration: Float = 0F
     var mAccelerationCurrent: Float = 0F
     var mAccelerationLast: Float = 0F
@@ -237,7 +232,6 @@ class NowPlayingFragment : Fragment() {
         audioVisualizationView.onPause()
         super.onPause()
     }
-
     override fun onDestroy() {
         super.onDestroy()
     }

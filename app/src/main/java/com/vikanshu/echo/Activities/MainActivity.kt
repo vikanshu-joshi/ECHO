@@ -30,7 +30,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.vikanshu.echo.Activities.MainActivity.statified.discArray
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Fragments.*
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity(){
 
     object statified{
         var mediaPlayer = MediaPlayer()
-        lateinit var discArray: ArrayList<Int>
     }
     lateinit var preferences: SharedPrefs
     lateinit var reciever: MyReceiver
@@ -52,11 +50,6 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        discArray = arrayListOf<Int>(R.drawable.one,R.drawable.two,R.drawable.three,R.drawable.four,R.drawable.five,R.drawable.six,
-                R.drawable.seven,R.drawable.eight,R.drawable.nine,R.drawable.ten,R.drawable.eleven,R.drawable.twelve,R.drawable.thirteen,R.drawable.fourteen,
-                R.drawable.fifteen,R.drawable.sixteen,R.drawable.seventeen,R.drawable.eighteen,R.drawable.nineteen,R.drawable.twenty,R.drawable.twentyone,R.drawable.twentytwo,
-                R.drawable.twentythree,R.drawable.twentyfour,R.drawable.twentyfive,R.drawable.twentysix,R.drawable.twentyseven,R.drawable.twentyeight,R.drawable.twentynine,R.drawable.thiry,
-                R.drawable.thirtyone,R.drawable.thirtytwo,R.drawable.thirtythree,R.drawable.thirtyfour,R.drawable.thirtyfive,R.drawable.thirtysix,R.drawable.thirtyseven)
         reciever = MyReceiver()
         filter = IntentFilter()
         filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)

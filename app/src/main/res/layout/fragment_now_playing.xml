@@ -246,7 +246,8 @@
             app:layout_constraintStart_toStartOf="@+id/disc"
             app:layout_constraintTop_toTopOf="@+id/disc"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/holder" />
+            app:srcCompat="@drawable/holder"
+            android:contentDescription="@string/logo" />
 
     </android.support.constraint.ConstraintLayout>
 
