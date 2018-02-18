@@ -68,9 +68,9 @@ class AllSongsFragment : Fragment() {
             visibleLayout.isClickable = false
         }
         else{
-            if (arg.equals("Main")){
-                mediaPlayer!!.setDataSource(songs[preferences.getSongInfo()].path)
-                mediaPlayer!!.prepare()
+            if (arg.equals("Main") && !mediaPlayer.isPlaying){
+                mediaPlayer.setDataSource(songs[preferences.getSongInfo()].path)
+                mediaPlayer.prepare()
             }
             updateViews()
             playPauseBottomBar.setOnClickListener {

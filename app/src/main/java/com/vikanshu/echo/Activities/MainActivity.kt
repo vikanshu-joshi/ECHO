@@ -21,6 +21,10 @@
 */
 package com.vikanshu.echo.Activities
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -31,6 +35,8 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.vikanshu.echo.Activities.MainActivity.statified.mediaPlayer
+import com.vikanshu.echo.Activities.MainActivity.statified.notificationManager
+import com.vikanshu.echo.Activities.MainActivity.statified.notificationTrack
 import com.vikanshu.echo.Data.SharedPrefs
 import com.vikanshu.echo.Fragments.*
 import com.vikanshu.echo.MyReceiver
@@ -42,6 +48,8 @@ class MainActivity : AppCompatActivity(){
 
     object statified{
         var mediaPlayer = MediaPlayer()
+        var notificationManager: NotificationManager ?= null
+        var notificationTrack: Notification ?= null
     }
     lateinit var preferences: SharedPrefs
     lateinit var reciever: MyReceiver
@@ -74,6 +82,12 @@ class MainActivity : AppCompatActivity(){
         favourites.setBackgroundColor(resources.getColor(R.color.white))
         settings.setBackgroundColor(resources.getColor(R.color.white))
         about.setBackgroundColor(resources.getColor(R.color.white))
+        val intent = Intent(this,MainActivity::class.java)
+        val pIntent = PendingIntent.getActivity(this,1024,intent,0)
+        notificationTrack = Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher_round).setContentTitle("Playing Music in Background")
+                .setContentIntent(pIntent).setOngoing(true).setAutoCancel(true).build()
+
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
     fun all_songs(v: View){
         preferences.setFragment(false)
@@ -148,5 +162,17 @@ class MainActivity : AppCompatActivity(){
         }else {
             super.onBackPressed()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mediaPlayer.isPlaying) {
+            notificationManager?.notify(1978, notificationTrack)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        notificationManager?.cancel(1978)
     }
 }
