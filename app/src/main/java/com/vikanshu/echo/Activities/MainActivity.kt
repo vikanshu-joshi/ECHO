@@ -130,16 +130,16 @@ class MainActivity : AppCompatActivity(){
         drawer_layout.closeDrawers()
     }
     fun about(v: View){
-        preferences.setFragment(true)
-        all_songs.setBackgroundColor(resources.getColor(R.color.white))
-        favourites.setBackgroundColor(resources.getColor(R.color.white))
-        settings.setBackgroundColor(resources.getColor(R.color.white))
-        about.setBackgroundColor(resources.getColor(R.color.gray))
-        this.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.frag_holder_main, AboutFragment())
-                .commit()
-        drawer_layout.closeDrawers()
+//        preferences.setFragment(true)
+//        all_songs.setBackgroundColor(resources.getColor(R.color.white))
+//        favourites.setBackgroundColor(resources.getColor(R.color.white))
+//        settings.setBackgroundColor(resources.getColor(R.color.white))
+//        about.setBackgroundColor(resources.getColor(R.color.gray))
+//        this.supportFragmentManager
+//                .beginTransaction()
+//                .replace(R.id.frag_holder_main, AboutFragment())
+//                .commit()
+//        drawer_layout.closeDrawers()
     }
     override fun onDestroy() {
         unregisterReceiver(reciever)

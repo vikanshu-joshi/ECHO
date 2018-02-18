@@ -129,7 +129,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:onClick="about"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="invisible">
 
                 <ImageView
                     android:id="@+id/imageView5"
